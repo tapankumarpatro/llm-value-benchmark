@@ -53,7 +53,7 @@ LLM Value Benchmark answers exactly that. It takes the raw benchmark scores from
 ## Key Features
 
 - **Profile-based comparison** — Pick from 9 usage profiles (Coding Assistant, RAG, Chat, Agentic Orchestrator, etc.) or create a custom one. Each profile sets the right input/output token weight ratio for your use case.
-- **21 models compared** — Claude Opus 4, GPT-4.1, Gemini 2.5 Pro, DeepSeek R1, Qwen3-Max, Llama 4, Mistral Large 2, and 14 more. Both closed-source and open-source.
+- **26 models compared** — Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4 Pro, Qwen3-Max-Thinking, Llama 4 Maverick, Mistral Large 3, and more. Each entry uses the latest shipping version with official API pricing.
 - **Live VAPS scoring** — Benchmark scores are adjusted in real-time for your selected profile's pricing weights. The chart updates instantly.
 - **Multi-benchmark selection** — LiveCodeBench, SWE-bench Verified, AIME 2025, GPQA Diamond, HumanEval, MBPP+. Pick what matters to your domain.
 - **Interactive grouped bar chart** — Red bars = closed source. Blue bars = open source. Hover for detailed cost breakdowns.
@@ -92,7 +92,7 @@ Here's what you'll see when you land on the page:
 ├──────────────────────────────────────────────────────┤
 │  🏆 Best Value  |  💰 Cheapest  |  🎯 Highest Raw    │
 │  VAPS: 45.2     |  $0.15/1M    |  94.5%              │
-│  Model X        |  Yi Light.   |  Claude Opus 4     │
+│  Model X        |  Yi Light.   |  Claude Opus 4.8   │
 ├──────────────────────────────────────────────────────┤
 │  Sortable Model Table                                │
 │  Model  │ Provider │ Type  │ In$/1M │ Out$/1M │ ... │

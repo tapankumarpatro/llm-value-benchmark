@@ -1,155 +1,212 @@
 [
   {
-    "id": "claude-opus-4",
-    "name": "Claude Opus 4",
+    "id": "claude-opus-4-8",
+    "name": "Claude Opus 4.8",
     "provider": "Anthropic",
     "type": "closed",
-    "input_price": 15.00,
-    "output_price": 75.00,
-    "context_window": 200000,
-    "last_updated": "2026-06-01",
+    "input_price": 5.00,
+    "output_price": 25.00,
+    "context_window": 1000000,
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 94.5,
-      "swe_bench": 79.0,
-      "aime_2025": 96.1,
-      "gpqa_diamond": 93.8,
-      "humaneval": 96.0,
-      "mbpp": 92.0
+      "livecode_bench": 92.0,
+      "swe_bench": 88.6,
+      "aime_2025": 96.5,
+      "gpqa_diamond": 94.0,
+      "humaneval": 96.5,
+      "mbpp": 93.0
     },
-    "notes": "Anthropic's most capable model"
+    "notes": "Pricing: https://platform.claude.com/docs/en/about-claude/pricing. SWE-bench Verified 88.6% per Anthropic system card / BenchLM (Jun 2026). Replaces deprecated Opus 4/4.1 ($15/$75)."
   },
   {
-    "id": "claude-sonnet-4",
-    "name": "Claude Sonnet 4",
+    "id": "claude-sonnet-4-6",
+    "name": "Claude Sonnet 4.6",
     "provider": "Anthropic",
     "type": "closed",
     "input_price": 3.00,
     "output_price": 15.00,
-    "context_window": 200000,
-    "last_updated": "2026-06-01",
+    "context_window": 1000000,
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 91.0,
-      "swe_bench": 73.0,
-      "aime_2025": 93.5,
-      "gpqa_diamond": 91.2,
-      "humaneval": 93.0,
-      "mbpp": 90.0
+      "livecode_bench": 88.5,
+      "swe_bench": 79.6,
+      "aime_2025": 93.8,
+      "gpqa_diamond": 91.5,
+      "humaneval": 94.0,
+      "mbpp": 90.5
     },
-    "notes": "Best balance of capability and cost"
+    "notes": "Pricing: https://platform.claude.com/docs/en/about-claude/pricing. Best price-performance tier in Anthropic lineup."
   },
   {
-    "id": "claude-haiku-35",
-    "name": "Claude Haiku 3.5",
+    "id": "claude-haiku-4-5",
+    "name": "Claude Haiku 4.5",
     "provider": "Anthropic",
     "type": "closed",
-    "input_price": 0.80,
-    "output_price": 4.00,
+    "input_price": 1.00,
+    "output_price": 5.00,
     "context_window": 200000,
-    "last_updated": "2026-06-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 78.0,
-      "swe_bench": 56.0,
-      "aime_2025": 79.2,
-      "gpqa_diamond": 82.5,
-      "humaneval": 85.0,
-      "mbpp": 83.0
+      "swe_bench": 65.0,
+      "aime_2025": 82.0,
+      "gpqa_diamond": 84.0,
+      "humaneval": 87.0,
+      "mbpp": 85.0
     },
-    "notes": "Fastest Anthropic model, strong for its price"
+    "notes": "Pricing: https://platform.claude.com/docs/en/about-claude/pricing. Replaces Haiku 3.5 ($0.80/$4.00)."
   },
   {
-    "id": "gpt-41",
+    "id": "gpt-5-5",
+    "name": "GPT-5.5",
+    "provider": "OpenAI",
+    "type": "closed",
+    "input_price": 5.00,
+    "output_price": 30.00,
+    "context_window": 1100000,
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 91.0,
+      "swe_bench": 85.0,
+      "aime_2025": 94.0,
+      "gpqa_diamond": 93.0,
+      "humaneval": 95.5,
+      "mbpp": 91.0
+    },
+    "notes": "Pricing: https://openai.com/api/pricing/ (standard tier, ≤272K context). OpenAI flagship as of Jun 2026."
+  },
+  {
+    "id": "gpt-5-4",
+    "name": "GPT-5.4",
+    "provider": "OpenAI",
+    "type": "closed",
+    "input_price": 2.50,
+    "output_price": 15.00,
+    "context_window": 1100000,
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 89.0,
+      "swe_bench": 80.6,
+      "aime_2025": 92.0,
+      "gpqa_diamond": 91.0,
+      "humaneval": 94.0,
+      "mbpp": 89.5
+    },
+    "notes": "Pricing: https://openai.com/api/pricing/. SWE-bench Verified ~80.6% per Steel.dev leaderboard (Gemini 3.1 Pro tier)."
+  },
+  {
+    "id": "gpt-4-1",
     "name": "GPT-4.1",
     "provider": "OpenAI",
     "type": "closed",
     "input_price": 2.00,
     "output_price": 8.00,
     "context_window": 1048576,
-    "last_updated": "2026-06-01",
-    "benchmarks": {
-      "livecode_bench": 90.5,
-      "swe_bench": 71.0,
-      "aime_2025": 91.8,
-      "gpqa_diamond": 90.0,
-      "humaneval": 94.0,
-      "mbpp": 89.5
-    },
-    "notes": "Latest GPT-4 class model with 1M context"
-  },
-  {
-    "id": "gpt-4o",
-    "name": "GPT-4o",
-    "provider": "OpenAI",
-    "type": "closed",
-    "input_price": 2.50,
-    "output_price": 10.00,
-    "context_window": 128000,
-    "last_updated": "2026-05-15",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 87.0,
-      "swe_bench": 65.0,
-      "aime_2025": 87.6,
-      "gpqa_diamond": 88.3,
-      "humaneval": 91.0,
-      "mbpp": 87.0
+      "swe_bench": 72.0,
+      "aime_2025": 90.0,
+      "gpqa_diamond": 89.0,
+      "humaneval": 93.0,
+      "mbpp": 88.0
     },
-    "notes": "Omnimodal flagship from OpenAI"
+    "notes": "Pricing: https://openai.com/api/pricing/. Popular for coding with 1M context at mid-tier pricing."
   },
   {
-    "id": "gemini-25-pro",
+    "id": "gpt-4-1-mini",
+    "name": "GPT-4.1 mini",
+    "provider": "OpenAI",
+    "type": "closed",
+    "input_price": 0.40,
+    "output_price": 1.60,
+    "context_window": 1048576,
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 76.0,
+      "swe_bench": 58.0,
+      "aime_2025": 80.0,
+      "gpqa_diamond": 81.0,
+      "humaneval": 85.0,
+      "mbpp": 82.0
+    },
+    "notes": "Pricing: https://openai.com/api/pricing/. Budget tier with 1M context — strong for solo devs."
+  },
+  {
+    "id": "o3",
+    "name": "o3",
+    "provider": "OpenAI",
+    "type": "closed",
+    "input_price": 2.00,
+    "output_price": 8.00,
+    "context_window": 200000,
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 88.0,
+      "swe_bench": 74.0,
+      "aime_2025": 96.0,
+      "gpqa_diamond": 90.0,
+      "humaneval": 92.0,
+      "mbpp": 87.0
+    },
+    "notes": "Pricing: https://openai.com/api/pricing/. Reasoning model — strong on math/reasoning benchmarks."
+  },
+  {
+    "id": "gemini-2-5-pro",
     "name": "Gemini 2.5 Pro",
     "provider": "Google",
     "type": "closed",
-    "input_price": 2.00,
+    "input_price": 1.25,
     "output_price": 10.00,
     "context_window": 1048576,
-    "last_updated": "2026-06-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 92.0,
-      "swe_bench": 74.0,
-      "aime_2025": 94.2,
-      "gpqa_diamond": 92.1,
-      "humaneval": 95.0,
-      "mbpp": 91.0
+      "livecode_bench": 84.0,
+      "swe_bench": 76.3,
+      "aime_2025": 88.0,
+      "gpqa_diamond": 87.0,
+      "humaneval": 90.0,
+      "mbpp": 86.0
     },
-    "notes": "Google's most capable model with 1M context"
+    "notes": "Pricing: https://ai.google.dev/gemini-api/docs/pricing (≤200K input tier). Output includes thinking tokens."
   },
   {
-    "id": "gemini-25-flash",
+    "id": "gemini-2-5-flash",
     "name": "Gemini 2.5 Flash",
     "provider": "Google",
     "type": "closed",
-    "input_price": 0.15,
-    "output_price": 0.60,
+    "input_price": 0.30,
+    "output_price": 2.50,
     "context_window": 1048576,
-    "last_updated": "2026-06-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 80.0,
-      "swe_bench": 60.0,
+      "livecode_bench": 78.0,
+      "swe_bench": 63.8,
       "aime_2025": 82.4,
       "gpqa_diamond": 84.1,
       "humaneval": 87.0,
       "mbpp": 85.0
     },
-    "notes": "Cost-efficient high-context model"
+    "notes": "Pricing: https://ai.google.dev/gemini-api/docs/pricing. Flat pricing at any context length."
   },
   {
-    "id": "qwen3-max-thinking",
-    "name": "Qwen3-Max-Thinking",
-    "provider": "Alibaba",
+    "id": "gemini-3-1-pro",
+    "name": "Gemini 3.1 Pro",
+    "provider": "Google",
     "type": "closed",
-    "input_price": 1.25,
-    "output_price": 3.75,
-    "context_window": 262144,
-    "last_updated": "2026-06-01",
+    "input_price": 2.00,
+    "output_price": 12.00,
+    "context_window": 2000000,
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 88.0,
-      "swe_bench": 72.0,
-      "aime_2025": 92.3,
-      "gpqa_diamond": 90.3,
+      "livecode_bench": 86.0,
+      "swe_bench": 80.6,
+      "aime_2025": 91.0,
+      "gpqa_diamond": 94.3,
       "humaneval": 92.0,
       "mbpp": 88.5
     },
-    "notes": "50% promotional discount applied to pricing"
+    "notes": "Pricing: https://ai.google.dev/gemini-api/docs/pricing. SWE-bench Verified 80.6% per Google DeepMind (Feb 2026)."
   },
   {
     "id": "grok-3",
@@ -159,16 +216,54 @@
     "input_price": 3.00,
     "output_price": 15.00,
     "context_window": 131072,
-    "last_updated": "2026-05-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 89.0,
-      "swe_bench": 68.0,
+      "livecode_bench": 85.0,
+      "swe_bench": 76.7,
       "aime_2025": 90.5,
       "gpqa_diamond": 89.0,
       "humaneval": 91.0,
       "mbpp": 87.5
     },
-    "notes": "xAI's flagship model"
+    "notes": "Pricing: https://docs.x.ai/docs/models. Premium tier — same price band as Claude Sonnet."
+  },
+  {
+    "id": "grok-3-mini",
+    "name": "Grok 3 Mini",
+    "provider": "xAI",
+    "type": "closed",
+    "input_price": 0.30,
+    "output_price": 0.50,
+    "context_window": 131072,
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 72.0,
+      "swe_bench": 58.0,
+      "aime_2025": 78.0,
+      "gpqa_diamond": 80.0,
+      "humaneval": 84.0,
+      "mbpp": 81.0
+    },
+    "notes": "Pricing: https://docs.x.ai/docs/models. Budget reasoning model — excellent output $/token for solo devs."
+  },
+  {
+    "id": "deepseek-v3-2",
+    "name": "DeepSeek V3.2",
+    "provider": "DeepSeek",
+    "type": "open",
+    "input_price": 0.28,
+    "output_price": 0.42,
+    "context_window": 131072,
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 82.0,
+      "swe_bench": 73.6,
+      "aime_2025": 86.0,
+      "gpqa_diamond": 85.0,
+      "humaneval": 88.0,
+      "mbpp": 86.0
+    },
+    "notes": "Pricing: https://api-docs.deepseek.com/quick_start/pricing. Unified chat+reasoning model replacing separate V3/R1 for most tasks."
   },
   {
     "id": "deepseek-r1",
@@ -178,54 +273,73 @@
     "input_price": 0.55,
     "output_price": 2.19,
     "context_window": 131072,
-    "last_updated": "2026-05-15",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 85.0,
-      "swe_bench": 64.0,
+      "swe_bench": 73.7,
       "aime_2025": 91.0,
       "gpqa_diamond": 87.5,
       "humaneval": 90.0,
       "mbpp": 86.0
     },
-    "notes": "Open-weight reasoning model"
+    "notes": "Pricing: https://api-docs.deepseek.com/quick_start/pricing. Reasoning model — output includes chain-of-thought tokens."
   },
   {
-    "id": "deepseek-v3",
-    "name": "DeepSeek V3",
+    "id": "deepseek-v4-pro",
+    "name": "DeepSeek V4 Pro",
     "provider": "DeepSeek",
     "type": "open",
-    "input_price": 0.27,
-    "output_price": 1.10,
+    "input_price": 0.44,
+    "output_price": 0.87,
     "context_window": 131072,
-    "last_updated": "2026-05-15",
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 80.0,
-      "swe_bench": 58.0,
-      "aime_2025": 83.5,
-      "gpqa_diamond": 84.0,
-      "humaneval": 86.0,
-      "mbpp": 84.0
+      "livecode_bench": 88.0,
+      "swe_bench": 80.6,
+      "aime_2025": 90.0,
+      "gpqa_diamond": 88.0,
+      "humaneval": 91.0,
+      "mbpp": 88.5
     },
-    "notes": "Mixture-of-experts architecture"
+    "notes": "Pricing: https://api-docs.deepseek.com. SWE-bench Verified 80.6% per BenchLM (Jun 2026). Latest DeepSeek flagship."
+  },
+  {
+    "id": "qwen3-max-thinking",
+    "name": "Qwen3-Max-Thinking",
+    "provider": "Alibaba",
+    "type": "closed",
+    "input_price": 1.20,
+    "output_price": 6.00,
+    "context_window": 262144,
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 91.4,
+      "swe_bench": 80.4,
+      "aime_2025": 100.0,
+      "gpqa_diamond": 92.8,
+      "humaneval": 92.0,
+      "mbpp": 88.5
+    },
+    "notes": "Pricing: https://www.alibabacloud.com/help/en/model-studio (≤32K tier). SWE-bench 80.4% per BenchLM. AIME25 100% per Alibaba."
   },
   {
     "id": "qwen3-235b-a22b",
     "name": "Qwen3-235B-A22B",
     "provider": "Alibaba",
     "type": "open",
-    "input_price": 1.60,
-    "output_price": 6.40,
+    "input_price": 0.60,
+    "output_price": 2.40,
     "context_window": 131072,
-    "last_updated": "2026-06-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 83.0,
-      "swe_bench": 62.0,
+      "livecode_bench": 80.0,
+      "swe_bench": 77.2,
       "aime_2025": 86.7,
       "gpqa_diamond": 85.2,
       "humaneval": 88.0,
       "mbpp": 85.5
     },
-    "notes": "MoE architecture, ~22B active params"
+    "notes": "Pricing: Alibaba DashScope API. SWE-bench Verified 77.2% per BenchLM. MoE with ~22B active params."
   },
   {
     "id": "qwen3-32b",
@@ -235,92 +349,73 @@
     "input_price": 0.35,
     "output_price": 1.40,
     "context_window": 131072,
-    "last_updated": "2026-06-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 74.0,
-      "swe_bench": 52.0,
+      "swe_bench": 69.2,
       "aime_2025": 78.9,
       "gpqa_diamond": 80.1,
       "humaneval": 82.0,
       "mbpp": 80.5
     },
-    "notes": "Strong small model, punches above its weight"
+    "notes": "Pricing: Alibaba DashScope / Together AI. Strong small open model for self-hosting."
   },
   {
-    "id": "llama-4",
-    "name": "Llama 4",
+    "id": "llama-4-maverick",
+    "name": "Llama 4 Maverick",
     "provider": "Meta",
     "type": "open",
-    "input_price": 2.50,
-    "output_price": 2.50,
-    "context_window": 131072,
-    "last_updated": "2026-05-01",
+    "input_price": 0.27,
+    "output_price": 0.85,
+    "context_window": 1000000,
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 81.0,
-      "swe_bench": 59.0,
+      "swe_bench": 77.4,
       "aime_2025": 84.2,
       "gpqa_diamond": 83.0,
       "humaneval": 86.0,
       "mbpp": 83.5
     },
-    "notes": "Next-gen Llama, 1:1 input:output pricing"
+    "notes": "Pricing: Together AI hosted API (https://www.together.ai/pricing). Meta does not sell Llama API directly."
   },
   {
-    "id": "llama-33-70b",
+    "id": "llama-3-3-70b",
     "name": "Llama 3.3 70B",
     "provider": "Meta",
     "type": "open",
-    "input_price": 0.59,
-    "output_price": 0.79,
+    "input_price": 0.23,
+    "output_price": 0.40,
     "context_window": 131072,
-    "last_updated": "2026-04-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 72.0,
-      "swe_bench": 50.0,
+      "swe_bench": 65.0,
       "aime_2025": 76.3,
       "gpqa_diamond": 78.5,
       "humaneval": 80.0,
       "mbpp": 79.0
     },
-    "notes": "Widely deployed open-weight model"
+    "notes": "Pricing: DeepInfra hosted (cheapest provider per AI Pricing Guru, May 2026). Widely self-hosted."
   },
   {
-    "id": "mistral-large-2",
-    "name": "Mistral Large 2",
+    "id": "mistral-large-3",
+    "name": "Mistral Large 3",
     "provider": "Mistral",
     "type": "open",
-    "input_price": 2.00,
-    "output_price": 6.00,
-    "context_window": 131072,
-    "last_updated": "2026-05-01",
+    "input_price": 0.50,
+    "output_price": 1.50,
+    "context_window": 256000,
+    "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 76.0,
-      "swe_bench": 55.0,
+      "livecode_bench": 78.0,
+      "swe_bench": 77.6,
       "aime_2025": 80.1,
       "gpqa_diamond": 81.5,
       "humaneval": 84.0,
       "mbpp": 82.0
     },
-    "notes": "Mistral's most capable model"
-  },
-  {
-    "id": "mixtral-8x22b",
-    "name": "Mixtral 8x22B",
-    "provider": "Mistral",
-    "type": "open",
-    "input_price": 1.20,
-    "output_price": 1.20,
-    "context_window": 65536,
-    "last_updated": "2026-04-01",
-    "benchmarks": {
-      "livecode_bench": 66.0,
-      "swe_bench": 44.0,
-      "aime_2025": 70.5,
-      "gpqa_diamond": 73.0,
-      "humaneval": 76.0,
-      "mbpp": 74.5
-    },
-    "notes": "MoE model with symmetric pricing"
+    "notes": "Pricing: https://mistral.ai/pricing. SWE-bench Verified 77.6% per BenchLM (Mistral Medium 3.5 128B tier)."
   },
   {
     "id": "command-r-plus",
@@ -330,7 +425,7 @@
     "input_price": 2.50,
     "output_price": 10.00,
     "context_window": 131072,
-    "last_updated": "2026-04-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 68.0,
       "swe_bench": 46.0,
@@ -339,7 +434,7 @@
       "humaneval": 78.0,
       "mbpp": 76.0
     },
-    "notes": "Optimized for RAG and enterprise use"
+    "notes": "Pricing: https://cohere.com/pricing. Optimized for RAG and enterprise retrieval workflows."
   },
   {
     "id": "gemma-3-27b",
@@ -349,7 +444,7 @@
     "input_price": 0.28,
     "output_price": 1.12,
     "context_window": 8192,
-    "last_updated": "2026-05-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 64.0,
       "swe_bench": 42.0,
@@ -358,7 +453,7 @@
       "humaneval": 74.0,
       "mbpp": 72.5
     },
-    "notes": "Google's lightweight open model"
+    "notes": "Pricing: Google AI / third-party hosts. Lightweight open model for edge/self-host."
   },
   {
     "id": "phi-4",
@@ -368,7 +463,7 @@
     "input_price": 0.30,
     "output_price": 1.20,
     "context_window": 16384,
-    "last_updated": "2026-05-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 70.0,
       "swe_bench": 48.0,
@@ -377,7 +472,7 @@
       "humaneval": 80.0,
       "mbpp": 78.0
     },
-    "notes": "Small but capable, strong reasoning for its size"
+    "notes": "Pricing: Azure AI / third-party hosts. Small model with strong reasoning for its size."
   },
   {
     "id": "yi-lightning",
@@ -387,7 +482,7 @@
     "input_price": 0.15,
     "output_price": 0.15,
     "context_window": 32768,
-    "last_updated": "2026-04-01",
+    "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 58.0,
       "swe_bench": 36.0,
@@ -396,6 +491,6 @@
       "humaneval": 70.0,
       "mbpp": 68.5
     },
-    "notes": "Ultra-low cost, symmetric pricing"
+    "notes": "Pricing: 01.AI API. Ultra-low symmetric pricing — often wins VAPS on output-heavy profiles."
   }
 ]

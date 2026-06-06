@@ -30,6 +30,7 @@ Submit a PR to [`data/models.json`](data/models.json). Add an entry following th
 
 **Rules:**
 
+- Use the **exact shipping model version** in `name` (e.g. `Claude Opus 4.8`, not `Claude Opus 4`). If multiple versions exist, include only the current flagship or best-value tier — not every variant.
 - `type` must be `"closed"` or `"open"`
 - `input_price` and `output_price` are in USD per 1M tokens
 - `last_updated` is **mandatory** — ISO date format (YYYY-MM-DD)
