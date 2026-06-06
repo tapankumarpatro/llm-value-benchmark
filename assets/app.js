@@ -889,6 +889,33 @@ function buildUI() {
     <!-- Profile Picker -->
     <div class="profile-picker" id="profilePicker"></div>
 
+    <!-- Active profile context -->
+    <div class="card profile-compact" id="profileCard">
+      <div class="profile-compact-main">
+        <div class="profile-header">
+          <div class="profile-icon"><span class="ti" id="profileIcon"></span></div>
+          <div class="profile-title-block">
+            <span class="profile-name" id="profileName"></span>
+            <div class="profile-tokens" id="profileTokens"></div>
+          </div>
+        </div>
+        <div class="profile-examples" id="profileExamples"></div>
+        <div class="profile-rationale" id="profileRationale"></div>
+      </div>
+      <div class="weights-display profile-weights">
+        <div class="weight-item">
+          <span>Input</span>
+          <div class="weight-bar"><div class="weight-fill input-fill" id="inputFill"></div></div>
+          <span class="weight-pct" id="weightInput">50%</span>
+        </div>
+        <div class="weight-item">
+          <span>Output</span>
+          <div class="weight-bar"><div class="weight-fill output-fill" id="outputFill"></div></div>
+          <span class="weight-pct" id="weightOutput">50%</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Controls -->
     <div class="controls-row">
       <select id="modelSet">
@@ -985,32 +1012,63 @@ function buildUI() {
       </div>
     </div>
 
-    <!-- Profile context (compact, below comparison) -->
-    <div class="card profile-compact" id="profileCard">
-      <div class="profile-compact-main">
-        <div class="profile-header">
-          <div class="profile-icon"><span class="ti" id="profileIcon"></span></div>
-          <div class="profile-title-block">
-            <span class="profile-name" id="profileName"></span>
-            <div class="profile-tokens" id="profileTokens"></div>
-          </div>
-        </div>
-        <div class="profile-examples" id="profileExamples"></div>
-        <div class="profile-rationale" id="profileRationale"></div>
+    <article class="seo-summary" id="seoSummary">
+      <h2>The LLM comparison tool built for solo developers and indie founders</h2>
+      <p class="seo-lead">
+        Leaderboard scores lie to bootstrapped builders. A model that tops SWE-bench can bankrupt you
+        if your product re-sends 200k tokens of agent context on every turn. <strong>llm-value-bench</strong>
+        adjusts real benchmark scores for <em>your</em> usage pattern and API pricing — so you pick the
+        model that actually fits your budget, not the one that wins Twitter.
+      </p>
+
+      <div class="seo-grid">
+        <section>
+          <h3>Who this is for</h3>
+          <ul>
+            <li><strong>Solo developers</strong> shipping AI features alone — no ML team to run evals</li>
+            <li><strong>Indie hackers</strong> comparing Claude, GPT, Gemini, and open models before committing</li>
+            <li><strong>Solo entrepreneurs</strong> watching every API dollar on n8n workflows, chatbots, and copilots</li>
+            <li><strong>Bootstrapped founders</strong> choosing between premium closed models and cheap open-source APIs</li>
+            <li><strong>Side-project builders</strong> who need coding, RAG, or agent orchestration — not generic chat</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Why you need it</h3>
+          <ul>
+            <li>Raw benchmarks ignore <strong>input vs output pricing</strong> — agent apps are 80%+ input tokens</li>
+            <li>Provider pricing pages show per-million rates, not <strong>effective cost for your workload</strong></li>
+            <li>“Best model” lists assume one-size-fits-all — your n8n node and your codegen tool do not</li>
+            <li>Open-source models look free until hosting, latency, and ops time are counted against API tiers</li>
+            <li>One wrong default model choice can mean <strong>hundreds per month</strong> in wasted API spend</li>
+          </ul>
+        </section>
       </div>
-      <div class="weights-display profile-weights">
-        <div class="weight-item">
-          <span>Input</span>
-          <div class="weight-bar"><div class="weight-fill input-fill" id="inputFill"></div></div>
-          <span class="weight-pct" id="weightInput">50%</span>
-        </div>
-        <div class="weight-item">
-          <span>Output</span>
-          <div class="weight-bar"><div class="weight-fill output-fill" id="outputFill"></div></div>
-          <span class="weight-pct" id="weightOutput">50%</span>
-        </div>
-      </div>
-    </div>
+
+      <section class="seo-profiles">
+        <h3>Pick the profile that matches how you actually call the API</h3>
+        <p>
+          Agentic orchestrators (LangGraph, CrewAI, AutoGen) stuff massive context in and emit tiny JSON actions.
+          Coding assistants balance file context with generated code. RAG pipelines read whole document corpora and
+          write short answers. Long-form generators do the opposite. Select a profile above — or set a custom
+          input/output ratio — and every model is scored for <em>your</em> economics.
+        </p>
+      </section>
+
+      <section class="seo-how">
+        <h3>How to use this benchmark</h3>
+        <ol>
+          <li>Choose your <strong>usage profile</strong> (agent, coding, RAG, chat, workflow, etc.)</li>
+          <li>Filter by <strong>closed vs open source</strong>, or hand-pick models to compare head-to-head</li>
+          <li>Toggle <strong>VAPS</strong> (value-adjusted score) vs raw benchmark % to see price impact</li>
+          <li>Sort the table by effective $/1M or VAPS to find your best value pick today</li>
+        </ol>
+      </section>
+
+      <p class="seo-footer-note">
+        Free, open source, no signup. Data from official provider pricing and public leaderboards — updated as models ship.
+        Built for builders who ship alone and pay the API bill themselves.
+      </p>
+    </article>
   `;
 
   initControls();

@@ -71,6 +71,7 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   font-feature-settings: "calt", "kern", "liga", "ss03";
+  overflow-x: clip;
 }
 
 body {
@@ -79,6 +80,7 @@ body {
   color: var(--ink);
   line-height: 1.6;
   min-height: 100vh;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -93,6 +95,9 @@ body {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 24px;
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
 }
 
 /* --- Header --- */
@@ -164,22 +169,10 @@ header {
 
 /* --- Profile Picker --- */
 .profile-picker {
-  padding: 16px 0 12px;
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: thin;
+  padding: 16px 0 8px;
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.profile-picker::-webkit-scrollbar {
-  height: 3px;
-}
-
-.profile-picker::-webkit-scrollbar-thumb {
-  background: var(--stone);
-  border-radius: 2px;
 }
 
 .profile-pill {
@@ -197,7 +190,6 @@ header {
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .profile-pill:hover {
@@ -223,6 +215,8 @@ header {
   gap: 16px;
   padding-top: 4px;
   padding-bottom: 16px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .dashboard-chart {
@@ -233,12 +227,12 @@ header {
   width: 100%;
 }
 
-/* --- Compact profile card (below comparison) --- */
+/* --- Compact profile card (above comparison) --- */
 .profile-compact {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin-bottom: 40px;
+  margin-bottom: 12px;
 }
 
 @media (min-width: 768px) {
@@ -268,6 +262,8 @@ header {
   border: 1px solid var(--hairline);
   border-radius: var(--radius-lg);
   padding: 20px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .card-title {
@@ -466,6 +462,8 @@ header {
   gap: 8px;
   align-items: center;
   padding: 4px 0 12px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .controls-row select,
@@ -633,7 +631,9 @@ header {
   position: relative;
   min-height: 420px;
   width: 100%;
+  max-width: 100%;
   margin-top: 4px;
+  overflow: hidden;
 }
 
 .chart-container canvas {
@@ -650,6 +650,8 @@ header {
   padding: 10px 0 4px;
   font-size: 0.78rem;
   color: var(--mute);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .legend-item {
@@ -721,6 +723,13 @@ header {
   border-radius: var(--radius-lg);
   border: 1px solid var(--hairline);
   background: var(--surface-elevated);
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .model-table {
@@ -874,3 +883,90 @@ footer {
 .mt-16 { margin-top: 16px; }
 .mb-8 { margin-bottom: 8px; }
 .mb-12 { margin-bottom: 12px; }
+
+/* --- SEO summary (below comparison) --- */
+.seo-summary {
+  margin: 8px 0 32px;
+  padding: 28px 0 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.seo-summary h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 14px;
+  line-height: 1.3;
+}
+
+.seo-summary h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.seo-lead {
+  font-size: 0.95rem;
+  color: var(--body);
+  line-height: 1.65;
+  margin-bottom: 24px;
+  max-width: 72ch;
+}
+
+.seo-lead strong {
+  color: var(--ink);
+}
+
+.seo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+@media (min-width: 640px) {
+  .seo-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.seo-summary section ul,
+.seo-summary section ol {
+  padding-left: 1.2rem;
+  color: var(--body);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.seo-summary section li {
+  margin-bottom: 8px;
+}
+
+.seo-summary section li strong {
+  color: var(--ink);
+}
+
+.seo-profiles,
+.seo-how {
+  margin-bottom: 24px;
+}
+
+.seo-profiles p,
+.seo-how p {
+  font-size: 0.88rem;
+  color: var(--body);
+  line-height: 1.65;
+  max-width: 72ch;
+}
+
+.seo-footer-note {
+  font-size: 0.82rem;
+  color: var(--ash);
+  line-height: 1.6;
+  padding: 16px 18px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+}
