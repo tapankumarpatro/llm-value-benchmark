@@ -441,9 +441,10 @@
     "name": "Gemma 3 27B",
     "provider": "Google",
     "type": "open",
-    "input_price": 0.28,
-    "output_price": 1.12,
-    "context_window": 8192,
+    "input_price": 0.09,
+    "output_price": 0.16,
+    "context_window": 131072,
+    "openrouter_id": "google/gemma-3-27b-it",
     "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 64.0,
@@ -453,16 +454,17 @@
       "humaneval": 74.0,
       "mbpp": 72.5
     },
-    "notes": "Pricing: Google AI / third-party hosts. Lightweight open model for edge/self-host."
+    "notes": "OpenRouter: google/gemma-3-27b-it. Pricing from OpenRouter (Jun 2026)."
   },
   {
     "id": "phi-4",
     "name": "Phi-4",
     "provider": "Microsoft",
     "type": "open",
-    "input_price": 0.30,
-    "output_price": 1.20,
+    "input_price": 0.07,
+    "output_price": 0.14,
     "context_window": 16384,
+    "openrouter_id": "microsoft/phi-4",
     "last_updated": "2026-06-06",
     "benchmarks": {
       "livecode_bench": 70.0,
@@ -472,25 +474,26 @@
       "humaneval": 80.0,
       "mbpp": 78.0
     },
-    "notes": "Pricing: Azure AI / third-party hosts. Small model with strong reasoning for its size."
+    "notes": "OpenRouter: microsoft/phi-4. Pricing from OpenRouter (Jun 2026)."
   },
   {
-    "id": "yi-lightning",
-    "name": "Yi Lightning",
-    "provider": "01.AI",
+    "id": "mixtral-8x22b",
+    "name": "Mixtral 8x22B",
+    "provider": "Mistral",
     "type": "open",
-    "input_price": 0.15,
-    "output_price": 0.15,
-    "context_window": 32768,
+    "input_price": 0.90,
+    "output_price": 0.90,
+    "context_window": 65536,
+    "openrouter_id": "mistralai/mixtral-8x22b-instruct",
     "last_updated": "2026-06-06",
     "benchmarks": {
-      "livecode_bench": 58.0,
-      "swe_bench": 36.0,
-      "aime_2025": 62.3,
-      "gpqa_diamond": 66.0,
-      "humaneval": 70.0,
-      "mbpp": 68.5
+      "livecode_bench": 68.0,
+      "swe_bench": 46.5,
+      "aime_2025": 70.2,
+      "gpqa_diamond": 72.5,
+      "humaneval": 76.0,
+      "mbpp": 74.0
     },
-    "notes": "Pricing: 01.AI API. Ultra-low symmetric pricing — often wins VAPS on output-heavy profiles."
+    "notes": "OpenRouter: mistralai/mixtral-8x22b-instruct. Replaces Yi Lightning (not on OpenRouter). Pricing from OpenRouter (Jun 2026)."
   }
 ]

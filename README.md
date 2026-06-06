@@ -92,7 +92,7 @@ Here's what you'll see when you land on the page:
 ├──────────────────────────────────────────────────────┤
 │  🏆 Best Value  |  💰 Cheapest  |  🎯 Highest Raw    │
 │  VAPS: 45.2     |  $0.15/1M    |  94.5%              │
-│  Model X        |  Yi Light.   |  Claude Opus 4.8   │
+│  Model X        |  Mixtral 8x22B |  Claude Opus 4.8 │
 ├──────────────────────────────────────────────────────┤
 │  Sortable Model Table                                │
 │  Model  │ Provider │ Type  │ In$/1M │ Out$/1M │ ... │

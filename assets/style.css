@@ -216,21 +216,13 @@ header {
   font-size: 0.95rem;
 }
 
-/* --- Main Grid --- */
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  padding-top: 8px;
-  padding-bottom: 16px;
-}
-
 /* --- Dashboard (chart + insights + table) --- */
 .dashboard {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 40px;
+  padding-top: 4px;
+  padding-bottom: 16px;
 }
 
 .dashboard-chart {
@@ -241,9 +233,32 @@ header {
   width: 100%;
 }
 
+/* --- Compact profile card (below comparison) --- */
+.profile-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
 @media (min-width: 768px) {
-  .main-grid {
-    grid-template-columns: 1fr 1fr;
+  .profile-compact {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .profile-compact-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .profile-weights {
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 4px;
   }
 }
 
@@ -292,10 +307,53 @@ header {
 }
 
 .profile-examples {
-  font-size: 0.8rem;
-  color: var(--mute);
-  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
   line-height: 1.4;
+}
+
+.used-by-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ash);
+}
+
+.tool-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  background: var(--surface-card);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  color: var(--body);
+  cursor: default;
+}
+
+.tool-chip img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.tool-chip .ti {
+  font-size: 0.9rem;
+  color: var(--mute);
+}
+
+.tool-chip-label {
+  white-space: nowrap;
 }
 
 .profile-tokens {
@@ -305,16 +363,28 @@ header {
   font-family: var(--font-mono);
 }
 
+.profile-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .profile-rationale {
   font-size: 0.8rem;
   color: var(--mute);
-  font-style: italic;
   line-height: 1.5;
-  margin-bottom: 14px;
-  padding: 12px;
+  margin-bottom: 0;
+  padding: 10px 12px;
   background: var(--surface-card);
   border-radius: var(--radius-sm);
   border: 1px solid var(--hairline);
+}
+
+.weight-pct {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  min-width: 32px;
+  text-align: right;
 }
 
 .weights-display {
@@ -508,6 +578,34 @@ header {
 
 .benchmark-menu.open {
   display: block;
+}
+
+.model-picker-menu {
+  min-width: 280px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.picker-hint {
+  font-size: 0.72rem;
+  color: var(--ash);
+  padding: 4px 8px 8px;
+  border-bottom: 1px solid var(--hairline-soft);
+  margin-bottom: 4px;
+}
+
+.model-option {
+  justify-content: flex-start;
+}
+
+.model-option-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.model-option-provider {
+  font-size: 0.72rem;
+  color: var(--ash);
 }
 
 .benchmark-option {

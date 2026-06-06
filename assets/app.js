@@ -8,15 +8,19 @@ const state = {
   profiles: [],
   selectedProfile: null,
   selectedSet: 'all',
+  pickedModelIds: [],
   selectedBenchmarks: ['livecode_bench','swe_bench','aime_2025','gpqa_diamond','humaneval','mbpp'],
   viewMode: 'vaps',    // 'vaps' or 'raw'
   chart: null,
   sortKey: null,
   sortAsc: true,
   benchMenuOpen: false,
+  modelMenuOpen: false,
   customInputWeight: 50,
   customOutputWeight: 50,
 };
+
+const SIMPLE_ICONS_CDN = 'https://cdn.simpleicons.org';
 
 const BENCH_LABELS = {
   livecode_bench: 'LiveCodeBench v6',
@@ -33,6 +37,7 @@ const SET_OPTIONS = {
   open: 'Open source only',
   top5v5: 'Top 5 Closed vs Top 5 Open',
   top3v3: 'Top 3 vs Top 3',
+  pick: 'Pick models…',
 };
 
 /* ---- Helpers ---- */
@@ -76,6 +81,13 @@ function avgVaps(model, profile, benchmarks) {
 function getFilteredModels() {
   const set = state.selectedSet;
   let filtered = [...state.models];
+
+  if (set === 'pick') {
+    if (state.pickedModelIds.length === 0) return [];
+    const idSet = new Set(state.pickedModelIds);
+    filtered = filtered.filter(m => idSet.has(m.id));
+    return filtered;
+  }
 
   if (set === 'closed') {
     filtered = filtered.filter(m => m.type === 'closed');
@@ -188,8 +200,16 @@ function renderChart() {
     return;
   }
 
-  if (models.length === 0 || benchmarks.length === 0) {
-    showChartMessage('No data to display for the current filters.');
+  if (benchmarks.length === 0) {
+    showChartMessage('Select at least one benchmark.');
+    return;
+  }
+
+  if (models.length === 0) {
+    const msg = state.selectedSet === 'pick'
+      ? 'Pick one or more models from the dropdown above.'
+      : 'No data to display for the current filters.';
+    showChartMessage(msg);
     return;
   }
 
@@ -457,17 +477,48 @@ window.handleTableSort = handleTableSort;
 
 /* ---- Profile Card ---- */
 
+function renderToolIcon(example) {
+  if (example.icon) {
+    return `<img src="${SIMPLE_ICONS_CDN}/${example.icon}/9c9c9d" alt="" width="16" height="16" loading="lazy">`;
+  }
+  if (example.tabler) {
+    return `<span class="ti ${example.tabler}"></span>`;
+  }
+  return '';
+}
+
+function renderToolChips(examples) {
+  if (!examples || examples.length === 0) return '';
+  return examples.map(ex => `
+    <span class="tool-chip" title="${ex.name}">
+      ${renderToolIcon(ex)}
+      <span class="tool-chip-label">${ex.name}</span>
+    </span>
+  `).join('');
+}
+
 function updateProfileCard() {
   const p = state.selectedProfile;
   document.getElementById('profileIcon').className = `ti ${p.icon}`;
   document.getElementById('profileName').textContent = p.label;
-  document.getElementById('profileExamples').textContent =
-    p.examples.length > 0 ? `Used by: ${p.examples.join(', ')}` : '';
+
+  const examplesEl = document.getElementById('profileExamples');
+  if (p.examples && p.examples.length > 0) {
+    examplesEl.innerHTML = `
+      <span class="used-by-label">Used by</span>
+      <div class="tool-chips">${renderToolChips(p.examples)}</div>
+    `;
+    examplesEl.style.display = '';
+  } else {
+    examplesEl.innerHTML = '';
+    examplesEl.style.display = 'none';
+  }
+
   document.getElementById('profileTokens').textContent =
     p.typical_input_tokens
-      ? `Typical: ~${formatNumber(p.typical_input_tokens)} input / ~${formatNumber(p.typical_output_tokens)} output tokens per call`
+      ? `~${formatNumber(p.typical_input_tokens)} input / ~${formatNumber(p.typical_output_tokens)} output tokens per call`
       : 'Custom ratio — set your own weights below';
-  document.getElementById('profileRationale').textContent = p.rationale || '';
+  document.getElementById('profileRationale').textContent = p.rationale || p.description || '';
 
   const wIn = (p.input_weight * 100).toFixed(0);
   const wOut = (p.output_weight * 100).toFixed(0);
@@ -475,20 +526,6 @@ function updateProfileCard() {
   document.getElementById('weightOutput').textContent = `${wOut}%`;
   document.getElementById('inputFill').style.width = `${wIn}%`;
   document.getElementById('outputFill').style.width = `${wOut}%`;
-
-  // Formula box
-  const profile = state.selectedProfile;
-  const firstModel = state.models[0];
-  if (firstModel) {
-    const cost = effectiveCost(firstModel, profile);
-    const costStr = `$${cost.toFixed(2)}/1M`;
-    document.getElementById('formulaEffectiveCost').textContent = costStr;
-    document.getElementById('formulaEffectiveCostLarge').textContent = costStr;
-  }
-  document.getElementById('formulaWeights').innerHTML =
-    `Input <strong>${wIn}%</strong> · Output <strong>${wOut}%</strong>`;
-  document.getElementById('formulaInputWeight').textContent = `$${firstModel ? firstModel.input_price.toFixed(2) : '–'} × ${(profile.input_weight * 100).toFixed(0)}%`;
-  document.getElementById('formulaOutputWeight').textContent = `$${firstModel ? firstModel.output_price.toFixed(2) : '–'} × ${(profile.output_weight * 100).toFixed(0)}%`;
 }
 
 function formatNumber(n) {
@@ -589,13 +626,66 @@ function initCustomSliders() {
 
 /* ---- Controls ---- */
 
+function syncModelPickerUI() {
+  const btn = document.getElementById('modelPickerBtn');
+  const menu = document.getElementById('modelPickerMenu');
+  if (!btn || !menu) return;
+
+  const isPick = state.selectedSet === 'pick';
+  btn.classList.toggle('active', isPick && state.pickedModelIds.length > 0);
+
+  const count = state.pickedModelIds.length;
+  btn.innerHTML = count > 0
+    ? `<span class="ti ti-list-check"></span> Models (${count}) ▾`
+    : '<span class="ti ti-list-check"></span> Pick models ▾';
+
+  menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = state.pickedModelIds.includes(cb.value);
+  });
+}
+
 function initControls() {
   // Model set dropdown
   const setSelect = document.getElementById('modelSet');
   setSelect.addEventListener('change', () => {
     state.selectedSet = setSelect.value;
+    syncModelPickerUI();
     fullRender();
     updateURL();
+  });
+
+  // Manual model picker
+  const modelBtn = document.getElementById('modelPickerBtn');
+  const modelMenu = document.getElementById('modelPickerMenu');
+
+  modelBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.modelMenuOpen = !state.modelMenuOpen;
+    modelMenu.classList.toggle('open', state.modelMenuOpen);
+    if (state.selectedSet !== 'pick') {
+      state.selectedSet = 'pick';
+      setSelect.value = 'pick';
+      syncModelPickerUI();
+    }
+  });
+
+  modelMenu.addEventListener('click', (e) => e.stopPropagation());
+
+  modelMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) {
+        if (!state.pickedModelIds.includes(cb.value)) {
+          state.pickedModelIds.push(cb.value);
+        }
+      } else {
+        state.pickedModelIds = state.pickedModelIds.filter(id => id !== cb.value);
+      }
+      state.selectedSet = 'pick';
+      setSelect.value = 'pick';
+      syncModelPickerUI();
+      fullRender();
+      updateURL();
+    });
   });
 
   // Benchmark dropdown
@@ -611,6 +701,8 @@ function initControls() {
   document.addEventListener('click', () => {
     benchMenu.classList.remove('open');
     state.benchMenuOpen = false;
+    modelMenu.classList.remove('open');
+    state.modelMenuOpen = false;
   });
 
   const benchCheckboxes = benchMenu.querySelectorAll('input[type="checkbox"]');
@@ -660,13 +752,20 @@ function parseURL() {
           state.selectedBenchmarks = Object.keys(BENCH_LABELS);
         }
         break;
+      case 'models':
+        state.pickedModelIds = val.split(',').filter(id => state.models.some(m => m.id === id));
+        if (state.pickedModelIds.length > 0) state.selectedSet = 'pick';
+        break;
     }
   }
 }
 
 function updateURL() {
   const benchStr = state.selectedBenchmarks.join(',');
-  const hash = `profile=${state.selectedProfile.id}&set=${state.selectedSet}&view=${state.viewMode}&bench=${benchStr}`;
+  let hash = `profile=${state.selectedProfile.id}&set=${state.selectedSet}&view=${state.viewMode}&bench=${benchStr}`;
+  if (state.selectedSet === 'pick' && state.pickedModelIds.length > 0) {
+    hash += `&models=${state.pickedModelIds.join(',')}`;
+  }
   history.replaceState(null, '', '#' + hash);
 }
 
@@ -756,6 +855,7 @@ async function init() {
   // Set control values from state
   document.getElementById('modelSet').value = state.selectedSet;
   document.getElementById('viewToggle').value = state.viewMode;
+  syncModelPickerUI();
 
   // Sync benchmark checkboxes
   document.querySelectorAll('#benchMenu input[type="checkbox"]').forEach(cb => {
@@ -776,62 +876,18 @@ async function init() {
 }
 
 function buildUI() {
-  // Inject the main content into the container
   const container = document.querySelector('.container');
+  const modelOptions = state.models.map(m => `
+    <label class="benchmark-option model-option">
+      <input type="checkbox" value="${m.id}">
+      <span class="model-option-name">${m.name}</span>
+      <span class="model-option-provider">${m.provider}</span>
+    </label>
+  `).join('');
+
   container.innerHTML = `
     <!-- Profile Picker -->
     <div class="profile-picker" id="profilePicker"></div>
-
-    <!-- Main Grid -->
-    <div class="main-grid">
-
-      <!-- Profile Card -->
-      <div class="card" id="profileCard">
-        <div class="profile-header">
-          <div class="profile-icon"><span class="ti" id="profileIcon"></span></div>
-          <span class="profile-name" id="profileName"></span>
-        </div>
-        <div class="profile-examples" id="profileExamples"></div>
-        <div class="profile-tokens" id="profileTokens"></div>
-        <div class="profile-rationale" id="profileRationale"></div>
-        <div class="weights-display">
-          <div class="weight-item">
-            <span>Input</span>
-            <div class="weight-bar"><div class="weight-fill input-fill" id="inputFill"></div></div>
-            <span style="font-family:var(--font-mono);font-size:0.8rem" id="weightInput">50%</span>
-          </div>
-          <div class="weight-item">
-            <span>Output</span>
-            <div class="weight-bar"><div class="weight-fill output-fill" id="outputFill"></div></div>
-            <span style="font-family:var(--font-mono);font-size:0.8rem" id="weightOutput">50%</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Formula Display -->
-      <div class="card">
-        <div class="card-title">VAPS Formula</div>
-        <div class="formula-box">
-          <div class="formula-main">
-            VAPS = Benchmark Score &divide; log<sub>10</sub>(1 + Effective Cost)
-          </div>
-          <div class="formula-vars">
-            <div>Effective Cost = (<span id="formulaInputWeight">$2.50 × 82%</span>) + (<span id="formulaOutputWeight">$10.00 × 18%</span>)</div>
-            <div style="margin-top:6px">
-              Blended cost: <strong id="formulaEffectiveCost">$3.85/1M</strong>
-            </div>
-            <div style="margin-top:4px">
-              Current weights: <span id="formulaWeights">Input 82% · Output 18%</span>
-            </div>
-          </div>
-        </div>
-        <div style="text-align:right">
-          <div class="live-cost-label">Profile Effective Cost/1M</div>
-          <div class="live-cost" id="formulaEffectiveCostLarge"></div>
-        </div>
-      </div>
-
-    </div>
 
     <!-- Controls -->
     <div class="controls-row">
@@ -841,10 +897,21 @@ function buildUI() {
         <option value="open">Open source only</option>
         <option value="top5v5">Top 5 Closed vs Top 5 Open</option>
         <option value="top3v3">Top 3 vs Top 3</option>
+        <option value="pick">Pick models…</option>
       </select>
 
       <div class="benchmark-dropdown">
-        <button class="filter-btn" id="benchBtn">
+        <button class="filter-btn" id="modelPickerBtn" type="button">
+          <span class="ti ti-list-check"></span> Pick models ▾
+        </button>
+        <div class="benchmark-menu model-picker-menu" id="modelPickerMenu">
+          <div class="picker-hint">Select models to compare side-by-side</div>
+          ${modelOptions}
+        </div>
+      </div>
+
+      <div class="benchmark-dropdown">
+        <button class="filter-btn" id="benchBtn" type="button">
           <span class="ti ti-list-check"></span> Benchmarks ▾
         </button>
         <div class="benchmark-menu" id="benchMenu">
@@ -882,46 +949,70 @@ function buildUI() {
       </div>
     </div>
 
-    <!-- Dashboard: chart + insights + table -->
+    <!-- Comparison: chart + insights + table -->
     <div class="dashboard">
-
-    <div class="card dashboard-chart">
-      <div class="card-title">Benchmark Comparison</div>
-      <div class="chart-container">
-        <canvas id="mainChart"></canvas>
+      <div class="card dashboard-chart">
+        <div class="card-title">Benchmark Comparison</div>
+        <div class="chart-container">
+          <canvas id="mainChart"></canvas>
+        </div>
+        <div class="chart-legend" id="chartLegend"></div>
       </div>
-      <div class="chart-legend" id="chartLegend"></div>
+
+      <div class="insights-strip" id="insightsStrip"></div>
+
+      <div class="dashboard-table">
+        <div class="table-wrapper">
+          <table class="model-table" id="modelTable">
+            <thead>
+              <tr>
+                <th data-sort="name" onclick="handleTableSort('name')">Model <span class="sort-icon">▽</span></th>
+                <th data-sort="provider" onclick="handleTableSort('provider')">Provider <span class="sort-icon">▽</span></th>
+                <th data-sort="type" onclick="handleTableSort('type')">Type <span class="sort-icon">▽</span></th>
+                <th data-sort="input" onclick="handleTableSort('input')">Input $/1M <span class="sort-icon">▽</span></th>
+                <th data-sort="output" onclick="handleTableSort('output')">Output $/1M <span class="sort-icon">▽</span></th>
+                <th data-sort="eff" onclick="handleTableSort('eff')">Eff. $/1M <span class="sort-icon">▽</span></th>
+                <th data-sort="raw" onclick="handleTableSort('raw')">Avg Raw <span class="sort-icon">▽</span></th>
+                <th data-sort="vaps" onclick="handleTableSort('vaps')">Avg VAPS <span class="sort-icon">▽</span></th>
+                <th data-sort="updated" onclick="handleTableSort('updated')">Updated <span class="sort-icon">▽</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-tertiary)">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <div class="insights-strip" id="insightsStrip"></div>
-
-    <div class="dashboard-table">
-      <div class="table-wrapper">
-        <table class="model-table" id="modelTable">
-          <thead>
-            <tr>
-              <th data-sort="name" onclick="handleTableSort('name')">Model <span class="sort-icon">▽</span></th>
-              <th data-sort="provider" onclick="handleTableSort('provider')">Provider <span class="sort-icon">▽</span></th>
-              <th data-sort="type" onclick="handleTableSort('type')">Type <span class="sort-icon">▽</span></th>
-              <th data-sort="input" onclick="handleTableSort('input')">Input $/1M <span class="sort-icon">▽</span></th>
-              <th data-sort="output" onclick="handleTableSort('output')">Output $/1M <span class="sort-icon">▽</span></th>
-              <th data-sort="eff" onclick="handleTableSort('eff')">Eff. $/1M <span class="sort-icon">▽</span></th>
-              <th data-sort="raw" onclick="handleTableSort('raw')">Avg Raw <span class="sort-icon">▽</span></th>
-              <th data-sort="vaps" onclick="handleTableSort('vaps')">Avg VAPS <span class="sort-icon">▽</span></th>
-              <th data-sort="updated" onclick="handleTableSort('updated')">Updated <span class="sort-icon">▽</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-tertiary)">Loading...</td></tr>
-          </tbody>
-        </table>
+    <!-- Profile context (compact, below comparison) -->
+    <div class="card profile-compact" id="profileCard">
+      <div class="profile-compact-main">
+        <div class="profile-header">
+          <div class="profile-icon"><span class="ti" id="profileIcon"></span></div>
+          <div class="profile-title-block">
+            <span class="profile-name" id="profileName"></span>
+            <div class="profile-tokens" id="profileTokens"></div>
+          </div>
+        </div>
+        <div class="profile-examples" id="profileExamples"></div>
+        <div class="profile-rationale" id="profileRationale"></div>
       </div>
-    </div>
-
+      <div class="weights-display profile-weights">
+        <div class="weight-item">
+          <span>Input</span>
+          <div class="weight-bar"><div class="weight-fill input-fill" id="inputFill"></div></div>
+          <span class="weight-pct" id="weightInput">50%</span>
+        </div>
+        <div class="weight-item">
+          <span>Output</span>
+          <div class="weight-bar"><div class="weight-fill output-fill" id="outputFill"></div></div>
+          <span class="weight-pct" id="weightOutput">50%</span>
+        </div>
+      </div>
     </div>
   `;
 
-  // Re-init controls after DOM build
   initControls();
 }
 
