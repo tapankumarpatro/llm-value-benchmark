@@ -222,7 +222,23 @@ header {
   grid-template-columns: 1fr;
   gap: 16px;
   padding-top: 8px;
+  padding-bottom: 16px;
+}
+
+/* --- Dashboard (chart + insights + table) --- */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   padding-bottom: 40px;
+}
+
+.dashboard-chart {
+  padding-bottom: 12px;
+}
+
+.dashboard-table {
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -517,12 +533,15 @@ header {
 /* --- Chart Container --- */
 .chart-container {
   position: relative;
-  min-height: 380px;
+  min-height: 420px;
   width: 100%;
+  margin-top: 4px;
 }
 
 .chart-container canvas {
   width: 100% !important;
+  height: 100% !important;
+  display: block;
 }
 
 /* --- Legend --- */

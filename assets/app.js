@@ -128,6 +128,52 @@ function getModelColorRgba(model, alpha = 1) {
   return `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${alpha})`;
 }
 
+/* ---- Chart DataLabels Plugin ---- */
+const ChartDataLabels = {
+  id: 'customDataLabels',
+  afterDraw(chart) {
+    const ctx = chart.ctx;
+    chart.data.datasets.forEach((dataset, i) => {
+      const meta = chart.getDatasetMeta(i);
+      if (!meta.hidden) {
+        meta.data.forEach((bar, index) => {
+          const val = dataset.data[index];
+          if (val === null || val === undefined) return;
+          const text = val.toFixed(1);
+          ctx.fillStyle = getComputedStyle(document.documentElement)
+            .getPropertyValue('--text-secondary').trim() || '#9c9c9d';
+          ctx.font = '500 10px JetBrains Mono, monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(text, bar.x, bar.y - 3);
+        });
+      }
+    });
+  },
+};
+
+function ensureChartCanvas() {
+  const container = document.querySelector('.chart-container');
+  if (!container) return null;
+
+  let canvas = document.getElementById('mainChart');
+  if (!canvas) {
+    container.innerHTML = '<canvas id="mainChart"></canvas>';
+    canvas = document.getElementById('mainChart');
+  }
+  return canvas;
+}
+
+function showChartMessage(message) {
+  const container = document.querySelector('.chart-container');
+  if (!container) return;
+  if (state.chart) {
+    state.chart.destroy();
+    state.chart = null;
+  }
+  container.innerHTML = `<div class="loading">${message}</div>`;
+}
+
 /* ---- Chart Rendering ---- */
 /* global Chart */
 
@@ -136,17 +182,26 @@ function renderChart() {
   const benchmarks = state.selectedBenchmarks;
   const view = state.viewMode;
   const profile = state.selectedProfile;
-  const ctx = document.getElementById('mainChart').getContext('2d');
 
-  if (state.chart) {
-    state.chart.destroy();
+  if (typeof Chart === 'undefined') {
+    showChartMessage('Chart library failed to load. Refresh the page.');
+    return;
   }
 
   if (models.length === 0 || benchmarks.length === 0) {
-    state.chart = null;
-    document.querySelector('.chart-container').innerHTML =
-      '<div class="loading"><div class="loading-spinner"></div>No data to display</div>';
+    showChartMessage('No data to display for the current filters.');
     return;
+  }
+
+  const canvas = ensureChartCanvas();
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  if (state.chart) {
+    state.chart.destroy();
+    state.chart = null;
   }
 
   // Build datasets: one per model
@@ -217,6 +272,7 @@ function renderChart() {
         x: {
           grid: { display: false },
           ticks: {
+            color: '#9c9c9d',
             font: { family: 'Inter', size: 11 },
             maxRotation: 35,
           },
@@ -224,9 +280,10 @@ function renderChart() {
         y: {
           beginAtZero: true,
           grid: {
-            color: 'rgba(128,128,128,0.08)',
+            color: 'rgba(255,255,255,0.06)',
           },
           ticks: {
+            color: '#9c9c9d',
             font: { family: 'JetBrains Mono', size: 11 },
             callback(val) {
               return view === 'raw' ? val.toFixed(0) + '%' : val.toFixed(1);
@@ -238,35 +295,14 @@ function renderChart() {
     plugins: [ChartDataLabels],
   };
 
-  state.chart = new Chart(ctx, config);
-
-  // Render legend
-  renderLegend(models);
+  try {
+    state.chart = new Chart(ctx, config);
+    renderLegend(models);
+  } catch (err) {
+    console.error('Chart render failed:', err);
+    showChartMessage('Could not render chart. Try a smaller model set.');
+  }
 }
-
-/* ---- Chart DataLabels Plugin ---- */
-const ChartDataLabels = {
-  id: 'customDataLabels',
-  afterDraw(chart) {
-    const ctx = chart.ctx;
-    chart.data.datasets.forEach((dataset, i) => {
-      const meta = chart.getDatasetMeta(i);
-      if (!meta.hidden) {
-        meta.data.forEach((bar, index) => {
-          const val = dataset.data[index];
-          if (val === null || val === undefined) return;
-          const text = val.toFixed(1);
-          ctx.fillStyle = getComputedStyle(document.documentElement)
-            .getPropertyValue('--text-secondary').trim() || '#6b6d74';
-          ctx.font = '500 10px JetBrains Mono, monospace';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'bottom';
-          ctx.fillText(text, bar.x, bar.y - 3);
-        });
-      }
-    });
-  },
-};
 
 /* ---- Legend ---- */
 
@@ -415,6 +451,9 @@ function handleTableSort(key) {
   }
   renderTable();
 }
+
+// Expose for inline onclick handlers in buildUI()
+window.handleTableSort = handleTableSort;
 
 /* ---- Profile Card ---- */
 
@@ -634,9 +673,9 @@ function updateURL() {
 /* ---- Full Re-render ---- */
 
 function fullRender() {
-  renderChart();
-  renderInsights();
-  renderTable();
+  try { renderChart(); } catch (err) { console.error('renderChart:', err); }
+  try { renderInsights(); } catch (err) { console.error('renderInsights:', err); }
+  try { renderTable(); } catch (err) { console.error('renderTable:', err); }
 }
 
 /* ---- Data Loading ---- */
@@ -647,6 +686,9 @@ async function loadData() {
       fetch('data/models.json'),
       fetch('data/profiles.json'),
     ]);
+    if (!modelsRes.ok || !profilesRes.ok) {
+      throw new Error(`HTTP ${modelsRes.status} / ${profilesRes.status}`);
+    }
     state.models = await modelsRes.json();
     state.profiles = await profilesRes.json();
 
@@ -840,19 +882,20 @@ function buildUI() {
       </div>
     </div>
 
-    <!-- Chart -->
-    <div class="card full-width">
+    <!-- Dashboard: chart + insights + table -->
+    <div class="dashboard">
+
+    <div class="card dashboard-chart">
+      <div class="card-title">Benchmark Comparison</div>
       <div class="chart-container">
         <canvas id="mainChart"></canvas>
       </div>
       <div class="chart-legend" id="chartLegend"></div>
     </div>
 
-    <!-- Insights Strip -->
-    <div class="insights-strip full-width" id="insightsStrip"></div>
+    <div class="insights-strip" id="insightsStrip"></div>
 
-    <!-- Model Table -->
-    <div class="full-width">
+    <div class="dashboard-table">
       <div class="table-wrapper">
         <table class="model-table" id="modelTable">
           <thead>
@@ -873,6 +916,8 @@ function buildUI() {
           </tbody>
         </table>
       </div>
+    </div>
+
     </div>
   `;
 

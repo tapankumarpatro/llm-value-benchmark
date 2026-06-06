@@ -17,8 +17,8 @@
 
   <link rel="stylesheet" href="assets/style.css">
 
-  <!-- Chart.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.7/chart.umd.min.js"></script>
+  <!-- Chart.js (jsdelivr — cdnjs 4.4.7 path 404s) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 
@@ -67,6 +67,7 @@
   </footer>
 
   <script src="assets/app.js" defer></script>
+  <!-- defer scripts run in order: Chart.js → app.js -->
 
 </body>
 </html>
