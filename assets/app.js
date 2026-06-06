@@ -18,6 +18,7 @@ const state = {
   modelMenuOpen: false,
   customInputWeight: 50,
   customOutputWeight: 50,
+  benchmarksUserSet: false,
 };
 
 const SIMPLE_ICONS_CDN = 'https://cdn.simpleicons.org';
@@ -32,7 +33,7 @@ const BENCH_LABELS = {
 };
 
 const SET_OPTIONS = {
-  all: 'All models',
+  all: 'Recommended for profile',
   closed: 'Closed source only',
   open: 'Open source only',
   top5v5: 'Top 5 Closed vs Top 5 Open',
@@ -78,15 +79,34 @@ function avgVaps(model, profile, benchmarks) {
 
 /* ---- Model Filtering ---- */
 
+function getProfileModelPool() {
+  const profile = state.selectedProfile;
+  if (!profile || profile.id === 'custom' || !profile.recommended_models) {
+    return [...state.models];
+  }
+  const ids = new Set(profile.recommended_models);
+  return state.models.filter(m => ids.has(m.id));
+}
+
+function sortModelsForProfile(models, profile, benchmarks) {
+  const view = state.viewMode;
+  return [...models].sort((a, b) => {
+    if (view === 'raw') {
+      return avgRaw(b, benchmarks) - avgRaw(a, benchmarks);
+    }
+    return avgVaps(b, profile, benchmarks) - avgVaps(a, profile, benchmarks);
+  });
+}
+
 function getFilteredModels() {
   const set = state.selectedSet;
-  let filtered = [...state.models];
+  let filtered = getProfileModelPool();
 
   if (set === 'pick') {
     if (state.pickedModelIds.length === 0) return [];
     const idSet = new Set(state.pickedModelIds);
-    filtered = filtered.filter(m => idSet.has(m.id));
-    return filtered;
+    filtered = state.models.filter(m => idSet.has(m.id));
+    return sortModelsForProfile(filtered, state.selectedProfile, state.selectedBenchmarks);
   }
 
   if (set === 'closed') {
@@ -94,24 +114,46 @@ function getFilteredModels() {
   } else if (set === 'open') {
     filtered = filtered.filter(m => m.type === 'open');
   } else if (set === 'top5v5') {
-    const closed = filtered.filter(m => m.type === 'closed')
-      .sort((a, b) => avgRaw(b, state.selectedBenchmarks) - avgRaw(a, state.selectedBenchmarks))
-      .slice(0, 5);
-    const open = filtered.filter(m => m.type === 'open')
-      .sort((a, b) => avgRaw(b, state.selectedBenchmarks) - avgRaw(a, state.selectedBenchmarks))
-      .slice(0, 5);
+    const profile = state.selectedProfile;
+    const benches = state.selectedBenchmarks;
+    const rank = (a, b) => avgVaps(b, profile, benches) - avgVaps(a, profile, benches);
+    const closed = filtered.filter(m => m.type === 'closed').sort(rank).slice(0, 5);
+    const open = filtered.filter(m => m.type === 'open').sort(rank).slice(0, 5);
     filtered = [...closed, ...open];
   } else if (set === 'top3v3') {
-    const closed = filtered.filter(m => m.type === 'closed')
-      .sort((a, b) => avgRaw(b, state.selectedBenchmarks) - avgRaw(a, state.selectedBenchmarks))
-      .slice(0, 3);
-    const open = filtered.filter(m => m.type === 'open')
-      .sort((a, b) => avgRaw(b, state.selectedBenchmarks) - avgRaw(a, state.selectedBenchmarks))
-      .slice(0, 3);
+    const profile = state.selectedProfile;
+    const benches = state.selectedBenchmarks;
+    const rank = (a, b) => avgVaps(b, profile, benches) - avgVaps(a, profile, benches);
+    const closed = filtered.filter(m => m.type === 'closed').sort(rank).slice(0, 3);
+    const open = filtered.filter(m => m.type === 'open').sort(rank).slice(0, 3);
     filtered = [...closed, ...open];
+  } else {
+    filtered = sortModelsForProfile(filtered, state.selectedProfile, state.selectedBenchmarks);
   }
 
   return filtered;
+}
+
+function applyProfileDefaults(profile) {
+  if (profile.default_benchmarks?.length) {
+    state.selectedBenchmarks = profile.default_benchmarks.filter(b => BENCH_LABELS[b]);
+  }
+  syncBenchmarkCheckboxes();
+}
+
+function syncBenchmarkCheckboxes() {
+  document.querySelectorAll('#benchMenu input[type="checkbox"]').forEach(cb => {
+    cb.checked = state.selectedBenchmarks.includes(cb.value);
+  });
+}
+
+function updateChartSubtitle() {
+  const el = document.getElementById('chartSubtitle');
+  if (!el || !state.selectedProfile) return;
+  const p = state.selectedProfile;
+  const count = getFilteredModels().length;
+  const mode = state.viewMode === 'vaps' ? 'VAPS' : 'raw scores';
+  el.textContent = `${p.label} · ${count} models · ${mode} · weights ${(p.input_weight * 100).toFixed(0)}% in / ${(p.output_weight * 100).toFixed(0)}% out`;
 }
 
 /* ---- Color Schemes ---- */
@@ -318,6 +360,7 @@ function renderChart() {
   try {
     state.chart = new Chart(ctx, config);
     renderLegend(models);
+    updateChartSubtitle();
   } catch (err) {
     console.error('Chart render failed:', err);
     showChartMessage('Could not render chart. Try a smaller model set.');
@@ -559,11 +602,13 @@ function selectProfile(id) {
   if (!profile) return;
   state.selectedProfile = profile;
 
-  // Show/hide custom sliders
+  if (!state.benchmarksUserSet) {
+    applyProfileDefaults(profile);
+  }
+
   const panel = document.getElementById('sliderPanel');
   if (id === 'custom') {
     panel.classList.add('visible');
-    // Restore any custom weights
     profile.input_weight = state.customInputWeight / 100;
     profile.output_weight = state.customOutputWeight / 100;
   } else {
@@ -708,6 +753,7 @@ function initControls() {
   const benchCheckboxes = benchMenu.querySelectorAll('input[type="checkbox"]');
   benchCheckboxes.forEach(cb => {
     cb.addEventListener('change', () => {
+      state.benchmarksUserSet = true;
       state.selectedBenchmarks = [];
       benchCheckboxes.forEach(c => {
         if (c.checked) state.selectedBenchmarks.push(c.value);
@@ -747,6 +793,7 @@ function parseURL() {
         if (val === 'vaps' || val === 'raw') state.viewMode = val;
         break;
       case 'bench':
+        state.benchmarksUserSet = true;
         state.selectedBenchmarks = val.split(',').filter(b => BENCH_LABELS[b]);
         if (state.selectedBenchmarks.length === 0) {
           state.selectedBenchmarks = Object.keys(BENCH_LABELS);
@@ -791,7 +838,6 @@ async function loadData() {
     state.models = await modelsRes.json();
     state.profiles = await profilesRes.json();
 
-    // Set defaults
     if (state.selectedProfile === null) {
       state.selectedProfile = state.profiles[0];
     }
@@ -831,8 +877,12 @@ async function init() {
   const loaded = await loadData();
   if (!loaded) return;
 
-  // Parse URL after data is loaded
+  const hash = window.location.hash;
   parseURL();
+
+  if (!state.benchmarksUserSet && !hash.includes('bench=') && state.selectedProfile?.default_benchmarks) {
+    applyProfileDefaults(state.selectedProfile);
+  }
 
   // Init UI
   if (state.selectedProfile.id === 'custom') {
@@ -919,7 +969,7 @@ function buildUI() {
     <!-- Controls -->
     <div class="controls-row">
       <select id="modelSet">
-        <option value="all">All models</option>
+        <option value="all">Recommended for profile</option>
         <option value="closed">Closed source only</option>
         <option value="open">Open source only</option>
         <option value="top5v5">Top 5 Closed vs Top 5 Open</option>
@@ -980,6 +1030,7 @@ function buildUI() {
     <div class="dashboard">
       <div class="card dashboard-chart">
         <div class="card-title">Benchmark Comparison</div>
+        <div class="chart-subtitle" id="chartSubtitle"></div>
         <div class="chart-container">
           <canvas id="mainChart"></canvas>
         </div>

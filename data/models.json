@@ -477,6 +477,106 @@
     "notes": "OpenRouter: microsoft/phi-4. Pricing from OpenRouter (Jun 2026)."
   },
   {
+    "id": "gpt-4o",
+    "name": "GPT-4o",
+    "provider": "OpenAI",
+    "type": "closed",
+    "input_price": 2.50,
+    "output_price": 10.00,
+    "context_window": 128000,
+    "openrouter_id": "openai/gpt-4o",
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 86.0,
+      "swe_bench": 74.5,
+      "aime_2025": 90.0,
+      "gpqa_diamond": 88.5,
+      "humaneval": 92.0,
+      "mbpp": 88.0
+    },
+    "notes": "OpenRouter: openai/gpt-4o. Popular for chat, voice pipelines, and OpenAI Realtime API."
+  },
+  {
+    "id": "gpt-4o-mini",
+    "name": "GPT-4o mini",
+    "provider": "OpenAI",
+    "type": "closed",
+    "input_price": 0.15,
+    "output_price": 0.60,
+    "context_window": 128000,
+    "openrouter_id": "openai/gpt-4o-mini",
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 78.0,
+      "swe_bench": 62.0,
+      "aime_2025": 82.0,
+      "gpqa_diamond": 82.5,
+      "humaneval": 86.0,
+      "mbpp": 83.0
+    },
+    "notes": "OpenRouter: openai/gpt-4o-mini. Low-latency tier for voice and realtime chat."
+  },
+  {
+    "id": "perplexity-sonar",
+    "name": "Perplexity Sonar",
+    "provider": "Perplexity",
+    "type": "closed",
+    "input_price": 1.00,
+    "output_price": 1.00,
+    "context_window": 127072,
+    "openrouter_id": "perplexity/sonar",
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 72.0,
+      "swe_bench": 55.0,
+      "aime_2025": 78.0,
+      "gpqa_diamond": 84.0,
+      "humaneval": 82.0,
+      "mbpp": 80.0
+    },
+    "notes": "OpenRouter: perplexity/sonar. Search-augmented model for chat and realtime Q&A."
+  },
+  {
+    "id": "perplexity-sonar-pro",
+    "name": "Perplexity Sonar Pro",
+    "provider": "Perplexity",
+    "type": "closed",
+    "input_price": 3.00,
+    "output_price": 15.00,
+    "context_window": 200000,
+    "openrouter_id": "perplexity/sonar-pro",
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 80.0,
+      "swe_bench": 68.0,
+      "aime_2025": 86.0,
+      "gpqa_diamond": 90.0,
+      "humaneval": 88.0,
+      "mbpp": 85.0
+    },
+    "notes": "OpenRouter: perplexity/sonar-pro. Higher-quality search model for RAG and chat."
+  },
+  {
+    "id": "perplexity-sonar-pro-search",
+    "name": "Perplexity Sonar Pro Search",
+    "provider": "Perplexity",
+    "type": "closed",
+    "input_price": 3.00,
+    "output_price": 15.00,
+    "context_window": 200000,
+    "openrouter_id": "perplexity/sonar-pro-search",
+    "last_updated": "2026-06-06",
+    "benchmarks": {
+      "livecode_bench": 82.0,
+      "swe_bench": 70.0,
+      "aime_2025": 88.0,
+      "gpqa_diamond": 92.0,
+      "humaneval": 89.0,
+      "mbpp": 86.0
+    },
+    "notes": "OpenRouter: perplexity/sonar-pro-search. Search-enabled tier for RAG and research workflows."
+  },
+  {
     "id": "mixtral-8x22b",
     "name": "Mixtral 8x22B",
     "provider": "Mistral",

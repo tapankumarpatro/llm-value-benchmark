@@ -272,7 +272,14 @@ header {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ash);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
+}
+
+.chart-subtitle {
+  font-size: 0.78rem;
+  color: var(--mute);
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
 }
 
 /* --- Profile Card --- */
