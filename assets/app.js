@@ -188,7 +188,7 @@ function renderChart() {
         legend: { display: false },
         tooltip: {
           backgroundColor: 'rgba(0,0,0,0.85)',
-          titleFont: { family: 'Hanken Grotesk', weight: '600' },
+          titleFont: { family: 'Inter', weight: '600' },
           bodyFont: { family: 'JetBrains Mono', size: 12 },
           padding: 12,
           cornerRadius: 8,
@@ -217,7 +217,7 @@ function renderChart() {
         x: {
           grid: { display: false },
           ticks: {
-            font: { family: 'Hanken Grotesk', size: 11 },
+            font: { family: 'Inter', size: 11 },
             maxRotation: 35,
           },
         },

@@ -3,31 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LLM Value Benchmark — Which LLM gives you the best performance for your actual usage?</title>
+  <title>LLM Value Benchmark — Find the Best Model for Solo Developers & Indie Hackers</title>
 
-  <!-- Preconnect to CDNs -->
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Google Fonts: Hanken Grotesk + JetBrains Mono -->
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.29.0/tabler-icons.min.css">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="assets/style.css">
 
   <!-- Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.7/chart.umd.min.js"></script>
 
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 
-  <meta name="description" content="Compare LLMs by value — VAPS formula adjusts benchmark scores for real-world pricing based on your usage profile.">
-  <meta property="og:title" content="LLM Value Benchmark">
-  <meta property="og:description" content="Which LLM gives you the best performance for your actual usage?">
+  <meta name="description" content="Compare LLM benchmark scores adjusted for real-world pricing. The only LLM comparison tool built for solo developers, indie hackers, and bootstrapped founders — find the best model for your actual usage and budget.">
+  <meta name="keywords" content="LLM comparison, AI model benchmark, VAPS score, best AI model for solo developers, cheapest LLM, indie hacker AI tools, LLM value calculator, AI pricing comparison, open source vs closed source LLM, coding AI comparison">
+  <meta property="og:title" content="LLM Value Benchmark - Find Your Best AI Model">
+  <meta property="og:description" content="Compare LLMs by real value — benchmark scores adjusted for actual pricing based on your usage pattern. Built for solo developers and indie hackers.">
+  <meta property="og:image" content="https://tapankumarpatro.github.io/llm-value-benchmark/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LLM Value Benchmark">
+  <meta name="twitter:description" content="Which LLM gives you the best performance for your actual usage?">
 </head>
 <body>
 
@@ -36,10 +38,10 @@
     <div class="logo">
       <span class="logo-accent"></span>
       llm-value-bench
-      <span class="tagline">· Which LLM gives you the best performance for your actual usage?</span>
+      <span class="tagline">· Find the best model for your actual usage</span>
     </div>
     <div class="header-actions">
-      <a href="https://github.com/your-username/llm-value-bench" target="_blank" rel="noopener">
+      <a href="https://github.com/tapankumarpatro/llm-value-benchmark" target="_blank" rel="noopener">
         <span class="ti ti-brand-github"></span> GitHub ↗
       </a>
     </div>
@@ -53,17 +55,17 @@
   <!-- Footer -->
   <footer>
     <div class="footer-links">
-      <a href="#formula" onclick="document.querySelector('.main-grid')?.scrollIntoView({behavior:'smooth'})">Formula explained</a>
-      <a href="https://github.com/your-username/llm-value-bench/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
-      <a href="https://github.com/your-username/llm-value-bench/blob/main/README.md" target="_blank" rel="noopener">README</a>
+      <a href="https://github.com/tapankumarpatro/llm-value-benchmark" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/tapankumarpatro/llm-value-benchmark/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>
+      <a href="https://github.com/tapankumarpatro/llm-value-benchmark/blob/main/README.md" target="_blank" rel="noopener">README</a>
       <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>
+      <a href="https://github.com/tapankumarpatro/llm-value-benchmark/issues/new" target="_blank" rel="noopener">Report Issue</a>
     </div>
     <div class="copy">
-      llm-value-bench — Benchmark scores sourced from official leaderboards. Prices subject to change.
+      llm-value-bench — Benchmark scores from official leaderboards. Prices subject to change.
     </div>
   </footer>
 
-  <!-- App Script — loads after Chart.js, defers until DOM ready -->
   <script src="assets/app.js" defer></script>
 
 </body>
