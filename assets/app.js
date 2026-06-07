@@ -10,7 +10,7 @@ const state = {
   selectedSet: 'all',
   pickedModelIds: [],
   selectedBenchmarks: ['livecode_bench','swe_bench','aime_2025','gpqa_diamond','humaneval','mbpp'],
-  viewMode: 'vaps',    // 'vaps' or 'raw'
+  viewMode: 'vaps',    // 'vaps' | 'raw' | 'scatter'
   chart: null,
   sortKey: null,
   sortAsc: true,
@@ -54,27 +54,56 @@ function vaps(score, cost) {
   return score / Math.log10(1 + cost);
 }
 
-function avgRaw(model, benchmarks) {
-  let sum = 0, count = 0;
-  for (const b of benchmarks) {
-    if (model.benchmarks[b] !== undefined) {
-      sum += model.benchmarks[b];
-      count++;
+/** Profile-weighted composite raw score (Option 1) */
+function weightedRaw(model, profile, benchmarks) {
+  const weights = profile.benchmark_weights;
+  if (!weights) {
+    let sum = 0, count = 0;
+    for (const b of benchmarks) {
+      if (model.benchmarks[b] !== undefined) {
+        sum += model.benchmarks[b];
+        count++;
+      }
+    }
+    return count > 0 ? sum / count : 0;
+  }
+
+  let sum = 0, wSum = 0;
+  for (const [bench, w] of Object.entries(weights)) {
+    if (!benchmarks.includes(bench)) continue;
+    const score = model.benchmarks[bench];
+    if (score !== undefined && w > 0) {
+      sum += score * w;
+      wSum += w;
     }
   }
-  return count > 0 ? sum / count : 0;
+  return wSum > 0 ? sum / wSum : 0;
 }
 
-function avgVaps(model, profile, benchmarks) {
+/** VAPS on profile-weighted composite score */
+function weightedVaps(model, profile, benchmarks) {
+  const raw = weightedRaw(model, profile, benchmarks);
   const cost = effectiveCost(model, profile);
-  let sum = 0, count = 0;
-  for (const b of benchmarks) {
-    if (model.benchmarks[b] !== undefined) {
-      sum += vaps(model.benchmarks[b], cost);
-      count++;
+  return vaps(raw, cost);
+}
+
+/** Option 2: minimum raw score floors per profile */
+function passesProfileGates(model, profile) {
+  if (profile.score_floors?.length) {
+    for (const floor of profile.score_floors) {
+      const score = model.benchmarks[floor.benchmark];
+      if (score === undefined || score < floor.min) return false;
     }
   }
-  return count > 0 ? sum / count : 0;
+  if (profile.context_window_max && model.context_window > profile.context_window_max) {
+    return false;
+  }
+  return true;
+}
+
+function applyProfileGates(models, profile, skipGates) {
+  if (skipGates || profile.id === 'custom') return models;
+  return models.filter(m => passesProfileGates(m, profile));
 }
 
 /* ---- Model Filtering ---- */
@@ -91,10 +120,10 @@ function getProfileModelPool() {
 function sortModelsForProfile(models, profile, benchmarks) {
   const view = state.viewMode;
   return [...models].sort((a, b) => {
-    if (view === 'raw') {
-      return avgRaw(b, benchmarks) - avgRaw(a, benchmarks);
+    if (view === 'raw' || view === 'scatter') {
+      return weightedRaw(b, profile, benchmarks) - weightedRaw(a, profile, benchmarks);
     }
-    return avgVaps(b, profile, benchmarks) - avgVaps(a, profile, benchmarks);
+    return weightedVaps(b, profile, benchmarks) - weightedVaps(a, profile, benchmarks);
   });
 }
 
@@ -116,14 +145,14 @@ function getFilteredModels() {
   } else if (set === 'top5v5') {
     const profile = state.selectedProfile;
     const benches = state.selectedBenchmarks;
-    const rank = (a, b) => avgVaps(b, profile, benches) - avgVaps(a, profile, benches);
+    const rank = (a, b) => weightedVaps(b, profile, benches) - weightedVaps(a, profile, benches);
     const closed = filtered.filter(m => m.type === 'closed').sort(rank).slice(0, 5);
     const open = filtered.filter(m => m.type === 'open').sort(rank).slice(0, 5);
     filtered = [...closed, ...open];
   } else if (set === 'top3v3') {
     const profile = state.selectedProfile;
     const benches = state.selectedBenchmarks;
-    const rank = (a, b) => avgVaps(b, profile, benches) - avgVaps(a, profile, benches);
+    const rank = (a, b) => weightedVaps(b, profile, benches) - weightedVaps(a, profile, benches);
     const closed = filtered.filter(m => m.type === 'closed').sort(rank).slice(0, 3);
     const open = filtered.filter(m => m.type === 'open').sort(rank).slice(0, 3);
     filtered = [...closed, ...open];
@@ -131,7 +160,8 @@ function getFilteredModels() {
     filtered = sortModelsForProfile(filtered, state.selectedProfile, state.selectedBenchmarks);
   }
 
-  return filtered;
+  const skipGates = set === 'pick';
+  return applyProfileGates(filtered, state.selectedProfile, skipGates);
 }
 
 function applyProfileDefaults(profile) {
@@ -147,13 +177,39 @@ function syncBenchmarkCheckboxes() {
   });
 }
 
+function formatBenchWeights(profile) {
+  if (!profile.benchmark_weights) return 'equal weights';
+  return Object.entries(profile.benchmark_weights)
+    .map(([b, w]) => `${BENCH_LABELS[b] || b} ${(w * 100).toFixed(0)}%`)
+    .join(' · ');
+}
+
 function updateChartSubtitle() {
   const el = document.getElementById('chartSubtitle');
   if (!el || !state.selectedProfile) return;
   const p = state.selectedProfile;
   const count = getFilteredModels().length;
-  const mode = state.viewMode === 'vaps' ? 'VAPS' : 'raw scores';
-  el.textContent = `${p.label} · ${count} models · ${mode} · weights ${(p.input_weight * 100).toFixed(0)}% in / ${(p.output_weight * 100).toFixed(0)}% out`;
+  const pool = getProfileModelPool();
+  const gated = applyProfileGates(pool, p, state.selectedSet === 'pick').length;
+  const excluded = pool.length - gated;
+  const modeLabel = { vaps: 'VAPS', raw: 'weighted raw', scatter: 'value map' }[state.viewMode] || state.viewMode;
+  let text = `${p.label} · ${count} models · ${modeLabel} · ${(p.input_weight * 100).toFixed(0)}% in / ${(p.output_weight * 100).toFixed(0)}% out`;
+  text += ` · Bench: ${formatBenchWeights(p)}`;
+  if (excluded > 0 && state.selectedSet !== 'pick') {
+    text += ` · ${excluded} below profile floor`;
+  }
+  el.textContent = text;
+
+  const scatterGuide = document.getElementById('scatterGuide');
+  if (scatterGuide) {
+    scatterGuide.hidden = state.viewMode !== 'scatter';
+  }
+  const chartTitle = document.getElementById('chartTitle');
+  if (chartTitle) {
+    chartTitle.textContent = state.viewMode === 'scatter'
+      ? 'Value Map — Quality vs Cost'
+      : 'Benchmark Comparison';
+  }
 }
 
 /* ---- Color Schemes ---- */
@@ -186,6 +242,7 @@ function getModelColorRgba(model, alpha = 1) {
 const ChartDataLabels = {
   id: 'customDataLabels',
   afterDraw(chart) {
+    if (chart.config.type !== 'bar') return;
     const ctx = chart.ctx;
     chart.data.datasets.forEach((dataset, i) => {
       const meta = chart.getDatasetMeta(i);
@@ -202,6 +259,28 @@ const ChartDataLabels = {
           ctx.fillText(text, bar.x, bar.y - 3);
         });
       }
+    });
+  },
+};
+
+const ScatterPointLabels = {
+  id: 'scatterPointLabels',
+  afterDatasetsDraw(chart) {
+    if (chart.config.type !== 'scatter') return;
+    const ctx = chart.ctx;
+    chart.data.datasets.forEach((dataset, i) => {
+      const meta = chart.getDatasetMeta(i);
+      if (meta.hidden) return;
+      meta.data.forEach((point, idx) => {
+        const label = dataset.label;
+        if (!label || !point) return;
+        const short = label.length > 14 ? label.slice(0, 12) + '…' : label;
+        ctx.fillStyle = '#cdcdcd';
+        ctx.font = '500 9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(short, point.x, point.y - 10);
+      });
     });
   },
 };
@@ -250,7 +329,7 @@ function renderChart() {
   if (models.length === 0) {
     const msg = state.selectedSet === 'pick'
       ? 'Pick one or more models from the dropdown above.'
-      : 'No data to display for the current filters.';
+      : 'No models pass this profile\'s quality floors. Try Pick models or Custom profile.';
     showChartMessage(msg);
     return;
   }
@@ -266,96 +345,175 @@ function renderChart() {
     state.chart = null;
   }
 
-  // Build datasets: one per model
-  const datasets = models.map((model, i) => {
-    const color = getModelColor(model, i);
-    const data = benchmarks.map(b => {
-      const score = model.benchmarks[b];
-      if (score === undefined) return null;
-      if (view === 'raw') return score;
-      const cost = effectiveCost(model, profile);
-      return vaps(score, cost);
-    });
+  let config;
 
-    return {
-      label: model.name,
-      data,
-      backgroundColor: getModelColorRgba(model, 0.85),
-      borderColor: color,
-      borderWidth: 1,
-      borderRadius: 3,
-      barPercentage: 0.85,
-      categoryPercentage: 0.7,
+  if (view === 'scatter') {
+    config = {
+      type: 'scatter',
+      data: {
+        datasets: models.map((model, i) => {
+          const color = getModelColor(model, i);
+          const raw = weightedRaw(model, profile, benchmarks);
+          const cost = effectiveCost(model, profile);
+          return {
+            label: model.name,
+            data: [{ x: raw, y: cost }],
+            backgroundColor: getModelColorRgba(model, 0.9),
+            borderColor: color,
+            borderWidth: 2,
+            pointRadius: 9,
+            pointHoverRadius: 11,
+          };
+        }),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 400 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.85)',
+            titleFont: { family: 'Inter', weight: '600' },
+            bodyFont: { family: 'JetBrains Mono', size: 12 },
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              title(items) {
+                return items[0]?.dataset?.label || '';
+              },
+              label(ctx) {
+                const model = models[ctx.datasetIndex];
+                if (!model) return '';
+                const raw = weightedRaw(model, profile, benchmarks);
+                const cost = effectiveCost(model, profile);
+                const v = weightedVaps(model, profile, benchmarks);
+                return [
+                  `  Wt. raw: ${raw.toFixed(1)}%`,
+                  `  Eff. $: $${cost.toFixed(2)}/1M`,
+                  `  VAPS: ${v.toFixed(1)}`,
+                ];
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            min: 0,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Profile-weighted raw score →',
+              color: '#9c9c9d',
+              font: { family: 'Inter', size: 11 },
+            },
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            ticks: {
+              color: '#9c9c9d',
+              font: { family: 'JetBrains Mono', size: 11 },
+              callback: val => val + '%',
+            },
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: '↑ Effective $/1M (lower is better)',
+              color: '#9c9c9d',
+              font: { family: 'Inter', size: 11 },
+            },
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            ticks: {
+              color: '#9c9c9d',
+              font: { family: 'JetBrains Mono', size: 11 },
+              callback: val => '$' + val.toFixed(2),
+            },
+          },
+        },
+      },
+      plugins: [ScatterPointLabels],
     };
-  });
+  } else {
+    const labels = models.map(m => m.name);
+    const data = models.map(m => {
+      if (view === 'raw') return weightedRaw(m, profile, benchmarks);
+      return weightedVaps(m, profile, benchmarks);
+    });
+    const bgColors = models.map((m, i) => getModelColorRgba(m, 0.85));
+    const borderColors = models.map((m, i) => getModelColor(m, i));
 
-  const config = {
-    type: 'bar',
-    data: {
-      labels: benchmarks.map(b => BENCH_LABELS[b] || b),
-      datasets,
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: {
-        duration: 400,
+    config = {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: view === 'raw' ? 'Weighted raw %' : 'VAPS',
+          data,
+          backgroundColor: bgColors,
+          borderColor: borderColors,
+          borderWidth: 1,
+          borderRadius: 3,
+          barPercentage: 0.75,
+          categoryPercentage: 0.8,
+        }],
       },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: 'rgba(0,0,0,0.85)',
-          titleFont: { family: 'Inter', weight: '600' },
-          bodyFont: { family: 'JetBrains Mono', size: 12 },
-          padding: 12,
-          cornerRadius: 8,
-          callbacks: {
-            title(items) {
-              return items[0]?.dataset?.label || '';
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 400 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.85)',
+            titleFont: { family: 'Inter', weight: '600' },
+            bodyFont: { family: 'JetBrains Mono', size: 12 },
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              title(items) {
+                return items[0]?.label || '';
+              },
+              label(ctx) {
+                const model = models[ctx.dataIndex];
+                if (!model) return '';
+                const raw = weightedRaw(model, profile, benchmarks);
+                const cost = effectiveCost(model, profile);
+                const v = weightedVaps(model, profile, benchmarks);
+                return [
+                  `  Wt. raw: ${raw.toFixed(1)}%`,
+                  `  Eff. $: $${cost.toFixed(2)}/1M`,
+                  `  VAPS: ${v.toFixed(1)}`,
+                ];
+              },
             },
-            label(ctx) {
-              const model = models[ctx.datasetIndex];
-              if (!model) return '';
-              const bench = benchmarks[ctx.dataIndex];
-              const raw = model.benchmarks[bench];
-              const cost = effectiveCost(model, profile);
-              const v = ctx.parsed.y;
-              const lines = [
-                `  Raw: ${raw !== undefined ? raw.toFixed(1) + '%' : 'N/A'}`,
-                `  Eff. $: $${cost.toFixed(2)}/1M`,
-                `  ${view === 'vaps' ? 'VAPS' : 'Score'}: ${v !== null ? v.toFixed(1) : 'N/A'}`,
-              ];
-              return lines;
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: '#9c9c9d',
+              font: { family: 'Inter', size: 10 },
+              maxRotation: 45,
+              minRotation: 25,
+            },
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            ticks: {
+              color: '#9c9c9d',
+              font: { family: 'JetBrains Mono', size: 11 },
+              callback(val) {
+                return view === 'raw' ? val.toFixed(0) + '%' : val.toFixed(1);
+              },
             },
           },
         },
       },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: {
-            color: '#9c9c9d',
-            font: { family: 'Inter', size: 11 },
-            maxRotation: 35,
-          },
-        },
-        y: {
-          beginAtZero: true,
-          grid: {
-            color: 'rgba(255,255,255,0.06)',
-          },
-          ticks: {
-            color: '#9c9c9d',
-            font: { family: 'JetBrains Mono', size: 11 },
-            callback(val) {
-              return view === 'raw' ? val.toFixed(0) + '%' : val.toFixed(1);
-            },
-          },
-        },
-      },
-    },
-    plugins: [ChartDataLabels],
-  };
+      plugins: [ChartDataLabels],
+    };
+  }
 
   try {
     state.chart = new Chart(ctx, config);
@@ -405,8 +563,8 @@ function renderInsights() {
 
   for (const m of models) {
     const cost = effectiveCost(m, profile);
-    const avg = avgVaps(m, profile, benches);
-    const raw = avgRaw(m, benches);
+    const avg = weightedVaps(m, profile, benches);
+    const raw = weightedRaw(m, profile, benches);
     if (avg > bestVaps) { bestVaps = avg; bestModel = m; }
     if (cost < cheapest) { cheapest = cost; cheapestModel = m; }
     if (raw > highest) { highest = raw; highestModel = m; }
@@ -424,7 +582,7 @@ function renderInsights() {
       <div class="insight-model">${cheapestModel ? cheapestModel.name : '-'}</div>
     </div>
     <div class="insight-card">
-      <div class="insight-label">Highest Raw Score</div>
+      <div class="insight-label">Highest Wt. Raw</div>
       <div class="insight-value">${highest.toFixed(1)}%</div>
       <div class="insight-model">${highestModel ? highestModel.name : '-'}</div>
     </div>
@@ -446,8 +604,8 @@ function renderTable() {
 
   const rows = models.map(m => {
     const cost = effectiveCost(m, profile);
-    const raw = avgRaw(m, benches);
-    const avgV = avgVaps(m, profile, benches);
+    const raw = weightedRaw(m, profile, benches);
+    const avgV = weightedVaps(m, profile, benches);
     return { model: m, cost, raw, avgV };
   });
 
@@ -790,7 +948,7 @@ function parseURL() {
         if (SET_OPTIONS[val]) state.selectedSet = val;
         break;
       case 'view':
-        if (val === 'vaps' || val === 'raw') state.viewMode = val;
+        if (val === 'vaps' || val === 'raw' || val === 'scatter') state.viewMode = val;
         break;
       case 'bench':
         state.benchmarksUserSet = true;
@@ -1003,7 +1161,8 @@ function buildUI() {
 
       <select id="viewToggle">
         <option value="vaps">VAPS (price-adjusted)</option>
-        <option value="raw">Raw score</option>
+        <option value="raw">Weighted raw score</option>
+        <option value="scatter">Value map (scatter)</option>
       </select>
     </div>
 
@@ -1029,8 +1188,14 @@ function buildUI() {
     <!-- Comparison: chart + insights + table -->
     <div class="dashboard">
       <div class="card dashboard-chart">
-        <div class="card-title">Benchmark Comparison</div>
+        <div class="card-title" id="chartTitle">Benchmark Comparison</div>
         <div class="chart-subtitle" id="chartSubtitle"></div>
+        <div class="scatter-guide" id="scatterGuide" hidden>
+          <div class="scatter-quadrant scatter-q-best"><span>↖</span> Best value — high score, low cost</div>
+          <div class="scatter-quadrant scatter-q-capable"><span>↗</span> Capable — high score, premium $</div>
+          <div class="scatter-quadrant scatter-q-budget"><span>↙</span> Budget — cheap, weaker raw</div>
+          <div class="scatter-quadrant scatter-q-avoid"><span>↘</span> Avoid — weak and expensive</div>
+        </div>
         <div class="chart-container">
           <canvas id="mainChart"></canvas>
         </div>
@@ -1050,8 +1215,8 @@ function buildUI() {
                 <th data-sort="input" onclick="handleTableSort('input')">Input $/1M <span class="sort-icon">▽</span></th>
                 <th data-sort="output" onclick="handleTableSort('output')">Output $/1M <span class="sort-icon">▽</span></th>
                 <th data-sort="eff" onclick="handleTableSort('eff')">Eff. $/1M <span class="sort-icon">▽</span></th>
-                <th data-sort="raw" onclick="handleTableSort('raw')">Avg Raw <span class="sort-icon">▽</span></th>
-                <th data-sort="vaps" onclick="handleTableSort('vaps')">Avg VAPS <span class="sort-icon">▽</span></th>
+                <th data-sort="raw" onclick="handleTableSort('raw')">Wt. Raw <span class="sort-icon">▽</span></th>
+                <th data-sort="vaps" onclick="handleTableSort('vaps')">VAPS <span class="sort-icon">▽</span></th>
                 <th data-sort="updated" onclick="handleTableSort('updated')">Updated <span class="sort-icon">▽</span></th>
               </tr>
             </thead>

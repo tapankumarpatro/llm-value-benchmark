@@ -280,7 +280,41 @@ body {
   color: var(--mute);
   margin-bottom: 10px;
   font-family: var(--font-mono);
+  line-height: 1.5;
 }
+
+.scatter-guide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 640px) {
+  .scatter-guide {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.scatter-quadrant {
+  font-size: 0.72rem;
+  color: var(--body);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hairline);
+  background: var(--surface-card);
+  line-height: 1.35;
+}
+
+.scatter-quadrant span {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.scatter-q-best { border-color: rgba(89, 212, 153, 0.35); color: #59d499; }
+.scatter-q-capable { border-color: rgba(91, 155, 213, 0.35); color: #5b9bd5; }
+.scatter-q-budget { border-color: rgba(255, 197, 51, 0.35); color: #ffc533; }
+.scatter-q-avoid { border-color: rgba(255, 97, 97, 0.35); color: #ff6161; }
 
 /* --- Profile Card --- */
 .profile-header {

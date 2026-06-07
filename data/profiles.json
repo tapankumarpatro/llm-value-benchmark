@@ -15,7 +15,15 @@
     "typical_input_tokens": 280000,
     "typical_output_tokens": 800,
     "rationale": "Soul/system prompt alone is often 50–100k tokens. Add tool schemas, memory, conversation history and you hit 200–300k input easily. The model just outputs a short tool call or decision.",
-    "default_benchmarks": ["swe_bench", "gpqa_diamond", "humaneval", "livecode_bench"],
+    "default_benchmarks": ["swe_bench", "livecode_bench", "aime_2025"],
+    "benchmark_weights": {
+      "livecode_bench": 0.35,
+      "swe_bench": 0.35,
+      "aime_2025": 0.30
+    },
+    "score_floors": [
+      { "benchmark": "swe_bench", "min": 30 }
+    ],
     "recommended_models": [
       "claude-opus-4-8", "claude-sonnet-4-6", "gpt-5-5", "gpt-5-4", "gemini-3-1-pro",
       "grok-3", "deepseek-v4-pro", "deepseek-r1", "qwen3-max-thinking", "o3"
@@ -38,6 +46,14 @@
     "typical_output_tokens": 600,
     "rationale": "Data payloads and task instructions dominate. Output is almost always a short structured response.",
     "default_benchmarks": ["humaneval", "gpqa_diamond", "mbpp"],
+    "benchmark_weights": {
+      "humaneval": 0.40,
+      "gpqa_diamond": 0.35,
+      "mbpp": 0.25
+    },
+    "score_floors": [
+      { "benchmark": "humaneval", "min": 70 }
+    ],
     "recommended_models": [
       "claude-haiku-4-5", "gpt-4-1-mini", "gemini-2-5-flash", "grok-3-mini",
       "deepseek-v3-2", "llama-3-3-70b", "mistral-large-3", "mixtral-8x22b"
@@ -59,7 +75,14 @@
     "typical_input_tokens": 40000,
     "typical_output_tokens": 3000,
     "rationale": "File context is large but so is generated code. Roughly balanced.",
-    "default_benchmarks": ["swe_bench", "livecode_bench", "humaneval", "mbpp"],
+    "default_benchmarks": ["swe_bench", "livecode_bench"],
+    "benchmark_weights": {
+      "swe_bench": 0.60,
+      "livecode_bench": 0.40
+    },
+    "score_floors": [
+      { "benchmark": "livecode_bench", "min": 40 }
+    ],
     "recommended_models": [
       "claude-opus-4-8", "claude-sonnet-4-6", "gpt-5-5", "gpt-5-4", "gpt-4-1",
       "gemini-3-1-pro", "gemini-2-5-pro", "deepseek-v4-pro", "deepseek-v3-2",
@@ -82,6 +105,14 @@
     "typical_output_tokens": 8000,
     "rationale": "The brief is tiny. The generated content is the expensive part.",
     "default_benchmarks": ["gpqa_diamond", "humaneval", "mbpp"],
+    "benchmark_weights": {
+      "gpqa_diamond": 0.35,
+      "humaneval": 0.35,
+      "mbpp": 0.30
+    },
+    "score_floors": [
+      { "benchmark": "mbpp", "min": 70 }
+    ],
     "recommended_models": [
       "claude-opus-4-8", "claude-sonnet-4-6", "gpt-5-5", "gpt-5-4",
       "gemini-3-1-pro", "gemini-2-5-pro", "grok-3", "deepseek-v4-pro"
@@ -104,6 +135,14 @@
     "typical_output_tokens": 600,
     "rationale": "History accumulates on input side but responses are moderate length.",
     "default_benchmarks": ["gpqa_diamond", "humaneval", "aime_2025"],
+    "benchmark_weights": {
+      "gpqa_diamond": 0.40,
+      "humaneval": 0.35,
+      "aime_2025": 0.25
+    },
+    "score_floors": [
+      { "benchmark": "gpqa_diamond", "min": 75 }
+    ],
     "recommended_models": [
       "claude-sonnet-4-6", "claude-haiku-4-5", "gpt-5-4", "gpt-4o", "gpt-4o-mini",
       "gemini-2-5-flash", "gemini-2-5-pro", "grok-3-mini", "perplexity-sonar",
@@ -126,7 +165,14 @@
     "typical_input_tokens": 90000,
     "typical_output_tokens": 400,
     "rationale": "The entire retrieval corpus goes in. The answer is a paragraph.",
-    "default_benchmarks": ["gpqa_diamond", "humaneval", "swe_bench"],
+    "default_benchmarks": ["humaneval", "gpqa_diamond"],
+    "benchmark_weights": {
+      "humaneval": 0.45,
+      "gpqa_diamond": 0.55
+    },
+    "score_floors": [
+      { "benchmark": "humaneval", "min": 70 }
+    ],
     "recommended_models": [
       "claude-sonnet-4-6", "gpt-4-1", "gemini-2-5-pro", "gemini-3-1-pro",
       "command-r-plus", "perplexity-sonar-pro", "perplexity-sonar-pro-search",
@@ -148,7 +194,15 @@
     "typical_input_tokens": 25000,
     "typical_output_tokens": 800,
     "rationale": "Diffs are large. Review comments are short.",
-    "default_benchmarks": ["swe_bench", "humaneval", "livecode_bench"],
+    "default_benchmarks": ["swe_bench", "livecode_bench", "humaneval"],
+    "benchmark_weights": {
+      "swe_bench": 0.45,
+      "livecode_bench": 0.35,
+      "humaneval": 0.20
+    },
+    "score_floors": [
+      { "benchmark": "swe_bench", "min": 35 }
+    ],
     "recommended_models": [
       "claude-opus-4-8", "claude-sonnet-4-6", "gpt-5-4", "gpt-4-1",
       "gemini-3-1-pro", "deepseek-v4-pro", "qwen3-max-thinking", "mistral-large-3"
@@ -170,7 +224,14 @@
     "typical_input_tokens": 1500,
     "typical_output_tokens": 400,
     "rationale": "Speech input is brief. Model must generate full natural sentences for TTS.",
-    "default_benchmarks": ["gpqa_diamond", "humaneval", "mbpp"],
+    "default_benchmarks": ["humaneval"],
+    "benchmark_weights": {
+      "humaneval": 1.0
+    },
+    "score_floors": [
+      { "benchmark": "humaneval", "min": 75 }
+    ],
+    "context_window_max": 200000,
     "recommended_models": [
       "claude-haiku-4-5", "gpt-4o", "gpt-4o-mini", "gpt-4-1-mini",
       "gemini-2-5-flash", "grok-3-mini", "perplexity-sonar", "perplexity-sonar-pro",
@@ -189,6 +250,8 @@
     "typical_output_tokens": null,
     "rationale": null,
     "default_benchmarks": ["livecode_bench", "swe_bench", "aime_2025", "gpqa_diamond", "humaneval", "mbpp"],
+    "benchmark_weights": null,
+    "score_floors": null,
     "recommended_models": null
   }
 ]
