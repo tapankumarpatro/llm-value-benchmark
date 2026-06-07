@@ -9,7 +9,7 @@
 
   <p>
     <a href="https://tapankumarpatro.github.io/llm-value-benchmark">
-      <img src="https://raw.githubusercontent.com/tapankumarpatro/llm-value-benchmark/master/assets/screenshot-hero.png" alt="LLM Value Benchmark" width="800">
+      <img src="https://raw.githubusercontent.com/tapankumarpatro/llm-value-benchmark/master/assets/screenshot-hero.png" alt="LLM Value Benchmark — comparison dashboard" width="800">
     </a>
   </p>
 
@@ -37,7 +37,7 @@ Every week a new LLM launches. Every launch comes with impressive benchmark scor
 
 > *"Does this model actually give me better results for what **I** build — and is it worth the price?"*
 
-LLM Value Benchmark answers exactly that. It takes the raw benchmark scores from all major leaderboards and adjusts them for **real-world pricing** based on **how you actually use AI**. The result is the industry's first **Value-Adjusted Performance Score (VAPS)** — a single number that tells you which model delivers the most bang for your buck in your specific workflow.
+LLM Value Benchmark answers exactly that. It takes raw benchmark scores from major leaderboards and adjusts them for **real-world pricing** based on **how you actually use AI**. The result is the **Value-Adjusted Performance Score (VAPS)** — a single number that tells you which model delivers the most intelligence per dollar for your specific workflow.
 
 ## Who It's For
 
@@ -52,14 +52,16 @@ LLM Value Benchmark answers exactly that. It takes the raw benchmark scores from
 
 ## Key Features
 
-- **Profile-based comparison** — Pick from 9 usage profiles (Coding Assistant, RAG, Chat, Agentic Orchestrator, etc.) or create a custom one. Each profile sets the right input/output token weight ratio for your use case.
-- **26 models compared** — Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4 Pro, Qwen3-Max-Thinking, Llama 4 Maverick, Mistral Large 3, and more. Each entry uses the latest shipping version with official API pricing.
-- **Live VAPS scoring** — Benchmark scores are adjusted in real-time for your selected profile's pricing weights. The chart updates instantly.
-- **Multi-benchmark selection** — LiveCodeBench, SWE-bench Verified, AIME 2025, GPQA Diamond, HumanEval, MBPP+. Pick what matters to your domain.
-- **Interactive grouped bar chart** — Red bars = closed source. Blue bars = open source. Hover for detailed cost breakdowns.
-- **Sortable data table** — Every metric in one view: prices, effective cost, average VAPS, last updated. Click any column to sort.
-- **Shareable URLs** — All settings are encoded in the URL hash. Share your exact comparison with teammates.
-- **Zero setup** — Open the page. No login. No API key. No loading spinners.
+- **Profile-based comparison** — 9 usage profiles (Coding Assistant, RAG, Chat, Agentic Orchestrator, etc.) each set the right input/output token weights and benchmark priorities for your use case.
+- **30+ models compared** — Claude Opus 4.8, GPT-4o, Gemini, DeepSeek, Qwen, Llama, Mistral, Mixtral, Perplexity, and more with OpenRouter-verified API pricing.
+- **Profile-weighted scoring** — Benchmarks are weighted per profile (e.g. SWE-bench for coding, AIME for agents) so rankings change when you switch workflows.
+- **Quality floors** — Models that fail minimum capability gates for a profile are filtered out automatically.
+- **Three chart views** — VAPS (price-adjusted), raw weighted score, and a scatter **value map** (score vs. effective $/1M).
+- **Comparison-first layout** — Pick a profile, see the chart and table immediately; landing content sits below the tool.
+- **Manual model picker** — Compare any subset of models side-by-side regardless of profile recommendations.
+- **Sortable data table** — Prices, effective cost, VAPS, and last-updated dates in one view.
+- **Shareable URLs** — All settings encoded in the URL hash. Share your exact comparison with teammates.
+- **Zero setup** — Open the page. No login. No API key. No build step.
 
 ## Live Demo
 
@@ -67,45 +69,27 @@ The benchmark is live at:
 
 ➡️ **[https://tapankumarpatro.github.io/llm-value-benchmark](https://tapankumarpatro.github.io/llm-value-benchmark)**
 
-Here's what you'll see when you land on the page:
+### Comparison dashboard
 
-```
-┌────────────────────────────────────────────────────┐
-│  [⚡] llm-value-bench · Find the best model         │
-│  for your actual usage             [GitHub ↗]      │
-├────────────────────────────────────────────────────┤
-│  Agentic Orc. │ Workflow Auto. │ Coding Asst. │    │
-│  Long-form │ Chat │ RAG │ Code Review │ Voice │    │
-│  Custom                                              │
-├───────────────────────┬──────────────────────────────┤
-│ Profile Card          │ VAPS Formula & Live Cost     │
-│ [icon] Coding Asst.   │ Effective Cost: $X.XX/1M     │
-│ Used by: Cursor, ...  │ Weights: Input 50/Output 50  │
-│ ~40k in / ~3k out     │                              │
-├───────────────────────┴──────────────────────────────┤
-│ [All models ▾] [Benchmarks ▾] [VAPS ▾]               │
-│ [Custom sliders — visible only on Custom profile]    │
-├──────────────────────────────────────────────────────┤
-│  📊 Grouped Bar Chart                                │
-│  One bar per model, per benchmark                    │
-│  Red = closed · Blue = open · Hover for details      │
-├──────────────────────────────────────────────────────┤
-│  🏆 Best Value  |  💰 Cheapest  |  🎯 Highest Raw    │
-│  VAPS: 45.2     |  $0.15/1M    |  94.5%              │
-│  Model X        |  Mixtral 8x22B |  Claude Opus 4.8 │
-├──────────────────────────────────────────────────────┤
-│  Sortable Model Table                                │
-│  Model  │ Provider │ Type  │ In$/1M │ Out$/1M │ ... │
-│  ───────┼──────────┼───────┼────────┼─────────┼─────│
-│  ...    │ ...      │ ...   │ ...    │ ...     │ ... │
-└──────────────────────────────────────────────────────┘
-```
+Profile tabs, weighted scoring controls, VAPS bar chart, insight cards, and sortable model table:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/tapankumarpatro/llm-value-benchmark/master/assets/screenshot-comparison.png" alt="Benchmark comparison — profiles, chart, and model table" width="800">
+</p>
+
+### Landing page
+
+SEO-friendly guide for solo developers and indie hackers — scroll below the tool on the live site:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/tapankumarpatro/llm-value-benchmark/master/assets/screenshot-landing.png" alt="Landing page for solo developers and indie hackers" width="800">
+</p>
 
 ## FAQ
 
 ### How is VAPS different from raw benchmark scores?
 
-Raw scores tell you which model is smartest. VAPS tells you which model gives you the **most intelligence per dollar** for your specific usage pattern. A model that scores 5% higher but costs 10x more is usually a worse deal.
+Raw scores tell you which model is smartest. VAPS tells you which model gives you the **most intelligence per dollar** for your specific usage pattern. A model that scores 5% higher but costs 10× more is usually a worse deal.
 
 ### What profiles are available?
 
@@ -129,7 +113,7 @@ This is a **community-maintained benchmark**. Here's how new models and price ch
 
 ### Automated (GitHub Actions)
 
-Every push to `main` triggers an automatic deploy to GitHub Pages. The `.github/workflows/deploy.yml` handles this with zero build steps.
+Every push to `master` triggers an automatic deploy to GitHub Pages. The `.github/workflows/deploy.yml` workflow deploys the repo root with zero build steps.
 
 ### Community PRs
 
@@ -140,21 +124,21 @@ When a new model launches or prices change, anyone can submit a PR:
 3. Include a source URL for benchmark scores
 4. Update `last_updated` field
 
-The `CONTRIBUTING.md` file has all the rules. PRs are reviewed and merged — the site updates instantly on merge.
+The `CONTRIBUTING.md` file has all the rules. PRs are reviewed and merged — the site updates within ~20 seconds of merge.
 
 ### What about automated scraping?
 
-Long-term, a scheduled GitHub Action (e.g. weekly cron) can be added to fetch pricing from provider APIs and benchmark scores from leaderboard endpoints. Contributions welcome — see the [open issues](https://github.com/tapankumarpatro/llm-value-benchmark/issues) for this feature.
+Long-term, a scheduled GitHub Action (e.g. weekly cron) can fetch pricing from provider APIs and benchmark scores from leaderboard endpoints. Contributions welcome — see the [open issues](https://github.com/tapankumarpatro/llm-value-benchmark/issues) for this feature.
 
 ## Tech Stack
 
 | Layer | Choice |
 |---|---|
 | **Framework** | None — pure HTML + CSS + JS |
-| **Charts** | Chart.js (CDN) |
-| **Icons** | Tabler Icons (CDN) |
+| **Charts** | Chart.js (jsDelivr CDN) |
+| **Icons** | Tabler Icons + Simple Icons (CDN) |
 | **Fonts** | Inter + JetBrains Mono (Google Fonts) |
-| **Theme** | Raycast-inspired dark mode |
+| **Theme** | Light mode with OnSet brand accent |
 | **Hosting** | GitHub Pages (auto-deploy via Actions) |
 | **Build** | None — deploy the repo root as-is |
 

@@ -32,6 +32,15 @@ const BENCH_LABELS = {
   mbpp: 'MBPP+',
 };
 
+function chartColors() {
+  const root = getComputedStyle(document.documentElement);
+  return {
+    tick: root.getPropertyValue('--chart-tick').trim() || '#64748b',
+    grid: root.getPropertyValue('--chart-grid').trim() || 'rgba(15,23,42,0.08)',
+    label: root.getPropertyValue('--chart-label').trim() || '#475569',
+  };
+}
+
 const SET_OPTIONS = {
   all: 'Recommended for profile',
   closed: 'Closed source only',
@@ -275,7 +284,7 @@ const ScatterPointLabels = {
         const label = dataset.label;
         if (!label || !point) return;
         const short = label.length > 14 ? label.slice(0, 12) + '…' : label;
-        ctx.fillStyle = '#cdcdcd';
+        ctx.fillStyle = chartColors().label;
         ctx.font = '500 9px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
@@ -345,6 +354,7 @@ function renderChart() {
     state.chart = null;
   }
 
+  const theme = chartColors();
   let config;
 
   if (view === 'scatter') {
@@ -404,12 +414,12 @@ function renderChart() {
             title: {
               display: true,
               text: 'Profile-weighted raw score →',
-              color: '#9c9c9d',
+              color: theme.tick,
               font: { family: 'Inter', size: 11 },
             },
-            grid: { color: 'rgba(255,255,255,0.06)' },
+            grid: { color: theme.grid },
             ticks: {
-              color: '#9c9c9d',
+              color: theme.tick,
               font: { family: 'JetBrains Mono', size: 11 },
               callback: val => val + '%',
             },
@@ -419,12 +429,12 @@ function renderChart() {
             title: {
               display: true,
               text: '↑ Effective $/1M (lower is better)',
-              color: '#9c9c9d',
+              color: theme.tick,
               font: { family: 'Inter', size: 11 },
             },
-            grid: { color: 'rgba(255,255,255,0.06)' },
+            grid: { color: theme.grid },
             ticks: {
-              color: '#9c9c9d',
+              color: theme.tick,
               font: { family: 'JetBrains Mono', size: 11 },
               callback: val => '$' + val.toFixed(2),
             },
@@ -492,7 +502,7 @@ function renderChart() {
           x: {
             grid: { display: false },
             ticks: {
-              color: '#9c9c9d',
+              color: theme.tick,
               font: { family: 'Inter', size: 10 },
               maxRotation: 45,
               minRotation: 25,
@@ -500,9 +510,9 @@ function renderChart() {
           },
           y: {
             beginAtZero: true,
-            grid: { color: 'rgba(255,255,255,0.06)' },
+            grid: { color: theme.grid },
             ticks: {
-              color: '#9c9c9d',
+              color: theme.tick,
               font: { family: 'JetBrains Mono', size: 11 },
               callback(val) {
                 return view === 'raw' ? val.toFixed(0) + '%' : val.toFixed(1);

@@ -1,21 +1,21 @@
 /* =============================================
-   llm-value-bench — Raycast-inspired Theme
+   llm-value-bench — Light theme (OnSet brand)
    ============================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 /* --- CSS Variables --- */
 :root {
-  --accent: #F54927;
-  --accent-light: rgba(245, 73, 39, 0.12);
-  --accent-faint: rgba(245, 73, 39, 0.06);
+  --accent: #FF2D2D;
+  --accent-light: rgba(255, 45, 45, 0.10);
+  --accent-faint: rgba(255, 45, 45, 0.05);
 
-  /* Dark surface ladder (Raycast-inspired) */
-  --canvas: #07080a;
-  --surface: #0d0d0d;
-  --surface-elevated: #101111;
-  --surface-card: #121212;
-  --surface-button: #18191a;
+  /* Light surfaces */
+  --canvas: #f6f8fb;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-card: #f1f5f9;
+  --surface-button: #ffffff;
 
   --bg: var(--canvas);
   --bg-alt: var(--surface);
@@ -23,30 +23,39 @@
   --bg-inset: var(--surface-card);
 
   /* Text */
-  --ink: #f4f4f6;
-  --body: #cdcdcd;
-  --mute: #9c9c9d;
-  --ash: #6a6b6c;
-  --stone: #434345;
+  --ink: #0f172a;
+  --body: #334155;
+  --mute: #64748b;
+  --ash: #94a3b8;
+  --stone: #cbd5e1;
   --text: var(--ink);
   --text-secondary: var(--body);
   --text-tertiary: var(--mute);
-  --text-inverse: #000000;
+  --text-inverse: #ffffff;
 
   /* Borders */
-  --hairline: #242728;
-  --hairline-soft: rgba(255,255,255,0.08);
-  --hairline-strong: rgba(255,255,255,0.16);
+  --hairline: #e2e8f0;
+  --hairline-soft: rgba(15, 23, 42, 0.06);
+  --hairline-strong: rgba(15, 23, 42, 0.12);
   --border: var(--hairline);
   --border-light: var(--hairline-soft);
 
-  /* Chart colors */
-  --closed-color: #ff6161;
-  --closed-light: rgba(255, 97, 97, 0.15);
-  --open-color: #5b9bd5;
-  --open-light: rgba(91, 155, 213, 0.15);
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
 
-  /* No shadows — elevation from surface ladder only */
+  /* Chart UI tokens */
+  --chart-tick: #64748b;
+  --chart-grid: rgba(15, 23, 42, 0.08);
+  --chart-label: #475569;
+
+  /* Model type colors */
+  --closed-color: #dc2626;
+  --closed-light: rgba(220, 38, 38, 0.10);
+  --open-color: #2563eb;
+  --open-light: rgba(37, 99, 235, 0.10);
+
+  /* Radii */
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 10px;
@@ -110,8 +119,10 @@ body {
   padding: 0 24px;
   position: sticky;
   top: 0;
-  background: var(--canvas);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
   z-index: 100;
+  box-shadow: var(--shadow-sm);
 }
 
 .logo {
@@ -124,13 +135,12 @@ body {
   color: var(--ink);
 }
 
-.logo-accent {
-  width: 18px;
-  height: 18px;
-  background: var(--accent);
-  border-radius: 5px;
-  display: inline-block;
+.logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
   flex-shrink: 0;
+  display: block;
 }
 
 .tagline {
@@ -264,6 +274,7 @@ body {
   padding: 20px;
   min-width: 0;
   max-width: 100%;
+  box-shadow: var(--shadow-sm);
 }
 
 .card-title {
@@ -1129,7 +1140,7 @@ footer {
   border-radius: var(--radius-sm);
   font-size: 1.1rem;
   margin-bottom: 14px;
-  border: 1px solid rgba(245, 73, 39, 0.2);
+  border: 1px solid rgba(255, 45, 45, 0.2);
 }
 
 .landing-split {
@@ -1304,7 +1315,7 @@ footer {
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(245, 73, 39, 0.25);
+  border: 1px solid rgba(255, 45, 45, 0.25);
 }
 
 .landing-steps-list strong {
