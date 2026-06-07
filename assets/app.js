@@ -1063,66 +1063,214 @@ function buildUI() {
       </div>
     </div>
 
-    <article class="seo-summary" id="seoSummary">
-      <h2>The LLM comparison tool built for solo developers and indie founders</h2>
-      <p class="seo-lead">
-        Leaderboard scores lie to bootstrapped builders. A model that tops SWE-bench can bankrupt you
-        if your product re-sends 200k tokens of agent context on every turn. <strong>llm-value-bench</strong>
-        adjusts real benchmark scores for <em>your</em> usage pattern and API pricing — so you pick the
-        model that actually fits your budget, not the one that wins Twitter.
-      </p>
-
-      <div class="seo-grid">
-        <section>
-          <h3>Who this is for</h3>
-          <ul>
-            <li><strong>Solo developers</strong> shipping AI features alone — no ML team to run evals</li>
-            <li><strong>Indie hackers</strong> comparing Claude, GPT, Gemini, and open models before committing</li>
-            <li><strong>Solo entrepreneurs</strong> watching every API dollar on n8n workflows, chatbots, and copilots</li>
-            <li><strong>Bootstrapped founders</strong> choosing between premium closed models and cheap open-source APIs</li>
-            <li><strong>Side-project builders</strong> who need coding, RAG, or agent orchestration — not generic chat</li>
-          </ul>
-        </section>
-        <section>
-          <h3>Why you need it</h3>
-          <ul>
-            <li>Raw benchmarks ignore <strong>input vs output pricing</strong> — agent apps are 80%+ input tokens</li>
-            <li>Provider pricing pages show per-million rates, not <strong>effective cost for your workload</strong></li>
-            <li>“Best model” lists assume one-size-fits-all — your n8n node and your codegen tool do not</li>
-            <li>Open-source models look free until hosting, latency, and ops time are counted against API tiers</li>
-            <li>One wrong default model choice can mean <strong>hundreds per month</strong> in wasted API spend</li>
-          </ul>
-        </section>
-      </div>
-
-      <section class="seo-profiles">
-        <h3>Pick the profile that matches how you actually call the API</h3>
-        <p>
-          Agentic orchestrators (LangGraph, CrewAI, AutoGen) stuff massive context in and emit tiny JSON actions.
-          Coding assistants balance file context with generated code. RAG pipelines read whole document corpora and
-          write short answers. Long-form generators do the opposite. Select a profile above — or set a custom
-          input/output ratio — and every model is scored for <em>your</em> economics.
+    <article class="landing" id="landing">
+      <header class="landing-hero">
+        <p class="landing-eyebrow">Built for builders who pay the API bill themselves</p>
+        <h2 class="landing-headline">Stop picking the model that wins Twitter.<br>Pick the one that wins for <span class="landing-accent">your</span> workload.</h2>
+        <p class="landing-lead">
+          Raw leaderboards rank models on skill alone. Your app bills on <strong>input tokens, output tokens, and how often you call the API</strong>.
+          llm-value-bench scores 30+ models by real benchmark performance adjusted for your usage profile and live pricing — so solo developers and indie founders ship faster without bleeding budget.
         </p>
+        <div class="landing-hero-actions">
+          <a href="#" class="landing-cta" id="scrollToTool">Compare models now ↑</a>
+          <a href="https://github.com/tapankumarpatro/llm-value-benchmark" class="landing-cta-secondary" target="_blank" rel="noopener">
+            <span class="ti ti-brand-github"></span> View on GitHub
+          </a>
+        </div>
+        <div class="landing-trust">
+          <div class="landing-stat"><span class="landing-stat-num">30+</span><span class="landing-stat-label">models tracked</span></div>
+          <div class="landing-stat"><span class="landing-stat-num">9</span><span class="landing-stat-label">usage profiles</span></div>
+          <div class="landing-stat"><span class="landing-stat-num">$0</span><span class="landing-stat-label">free, no signup</span></div>
+          <div class="landing-stat"><span class="landing-stat-num">Open</span><span class="landing-stat-label">source MIT</span></div>
+        </div>
+      </header>
+
+      <section class="landing-section">
+        <h3 class="landing-section-title">Who this is for</h3>
+        <p class="landing-section-intro">If you're building alone and every API dollar comes from your own pocket, this tool is for you.</p>
+        <div class="landing-persona-grid">
+          <div class="landing-persona-card">
+            <span class="landing-icon ti ti-user-code"></span>
+            <h4>Solo developers</h4>
+            <p>Shipping AI features without an ML team. Compare Claude, GPT, Gemini, and open models before you hard-code a default in production.</p>
+          </div>
+          <div class="landing-persona-card">
+            <span class="landing-icon ti ti-rocket"></span>
+            <h4>Indie hackers</h4>
+            <p>Launching side projects, SaaS MVPs, and AI wrappers. Find the cheapest model that still hits your quality bar — not the flagship you can't afford at scale.</p>
+          </div>
+          <div class="landing-persona-card">
+            <span class="landing-icon ti ti-building-store"></span>
+            <h4>Solo entrepreneurs</h4>
+            <p>Running n8n workflows, customer chatbots, and content pipelines. See effective $/1M for <em>your</em> token mix, not a generic chat ratio.</p>
+          </div>
+          <div class="landing-persona-card">
+            <span class="landing-icon ti ti-wallet"></span>
+            <h4>Bootstrapped founders</h4>
+            <p>Choosing between closed APIs and self-hosted open models. Compare real value — benchmark score divided by what you actually pay per call.</p>
+          </div>
+        </div>
       </section>
 
-      <section class="seo-how">
-        <h3>How to use this benchmark</h3>
-        <ol>
-          <li>Choose your <strong>usage profile</strong> (agent, coding, RAG, chat, workflow, etc.)</li>
-          <li>Filter by <strong>closed vs open source</strong>, or hand-pick models to compare head-to-head</li>
-          <li>Toggle <strong>VAPS</strong> (value-adjusted score) vs raw benchmark % to see price impact</li>
-          <li>Sort the table by effective $/1M or VAPS to find your best value pick today</li>
+      <section class="landing-section landing-problem">
+        <div class="landing-split">
+          <div class="landing-split-text">
+            <h3 class="landing-section-title">Why raw benchmarks mislead you</h3>
+            <p>SWE-bench and LiveCodeBench tell you which model is smartest. They don't tell you which model is smartest <strong>for your budget</strong>.</p>
+            <ul class="landing-checklist">
+              <li><span class="ti ti-x landing-x"></span> Agent apps re-send 200k+ tokens of context every turn — input pricing dominates</li>
+              <li><span class="ti ti-x landing-x"></span> Voice and chat apps generate long outputs — output pricing dominates</li>
+              <li><span class="ti ti-x landing-x"></span> Provider pages list $/1M rates, not blended cost for your workload</li>
+              <li><span class="ti ti-x landing-x"></span> "Best model" listicles assume one-size-fits-all usage</li>
+            </ul>
+          </div>
+          <div class="landing-callout-card">
+            <p class="landing-callout-label">Example · Agentic Orchestrator</p>
+            <p class="landing-callout-big">82% input · 18% output</p>
+            <p class="landing-callout-body">Claude Opus 4.8 costs ~$5/1M effective on agents — not $25/1M from naive headline pricing. The wrong assumption costs hundreds per month at scale.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section">
+        <h3 class="landing-section-title">One tool, nine real-world usage profiles</h3>
+        <p class="landing-section-intro">Each profile models how tokens actually flow in production — not generic chat.</p>
+        <div class="landing-table-wrap">
+          <table class="landing-table">
+            <thead>
+              <tr>
+                <th>Profile</th>
+                <th>Typical use</th>
+                <th>Token bias</th>
+                <th>Best for</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Agentic Orchestrator</strong></td>
+                <td>LangGraph, CrewAI, AutoGen</td>
+                <td class="mono">82% in / 18% out</td>
+                <td>Long-context agents, tool calling</td>
+              </tr>
+              <tr>
+                <td><strong>Voice / Realtime</strong></td>
+                <td>ElevenLabs, OpenAI Realtime, Vapi</td>
+                <td class="mono">28% in / 72% out</td>
+                <td>Speech pipelines, low-latency chat</td>
+              </tr>
+              <tr>
+                <td><strong>RAG / Doc Q&A</strong></td>
+                <td>Notion AI, Perplexity, custom RAG</td>
+                <td class="mono">88% in / 12% out</td>
+                <td>Retrieval-heavy, short answers</td>
+              </tr>
+              <tr>
+                <td><strong>Coding Assistant</strong></td>
+                <td>Cursor, Claude Code, Copilot</td>
+                <td class="mono">50% in / 50% out</td>
+                <td>File context + code generation</td>
+              </tr>
+              <tr>
+                <td><strong>Workflow Automation</strong></td>
+                <td>n8n, Zapier, Make</td>
+                <td class="mono">72% in / 28% out</td>
+                <td>Structured JSON in/out</td>
+              </tr>
+              <tr>
+                <td><strong>Long-form Generation</strong></td>
+                <td>Scripts, ads, content pipelines</td>
+                <td class="mono">22% in / 78% out</td>
+                <td>Brief in, long copy out</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="landing-section">
+        <h3 class="landing-section-title">Why builders choose llm-value-bench</h3>
+        <div class="landing-feature-grid">
+          <div class="landing-feature-card">
+            <span class="landing-icon ti ti-calculator"></span>
+            <h4>Price-adjusted scores (VAPS)</h4>
+            <p>Benchmark score divided by log of effective cost. Rewards models that perform well <em>and</em> fit your token economics — not just the smartest model on the leaderboard.</p>
+          </div>
+          <div class="landing-feature-card">
+            <span class="landing-icon ti ti-adjustments-horizontal"></span>
+            <h4>Profile-aware comparisons</h4>
+            <p>Switch from agents to voice to RAG and the model pool, benchmarks, and rankings all update. No more comparing a coding model to a search model with the same yardstick.</p>
+          </div>
+          <div class="landing-feature-card">
+            <span class="landing-icon ti ti-currency-dollar"></span>
+            <h4>Live API pricing</h4>
+            <p>Input and output rates from official provider docs and OpenRouter. See effective $/1M for your profile before you commit to a default model in prod.</p>
+          </div>
+          <div class="landing-feature-card">
+            <span class="landing-icon ti ti-list-check"></span>
+            <h4>Hand-pick any matchup</h4>
+            <p>Compare Claude Opus vs DeepSeek V4 vs Gemini Flash head-to-head. Filter closed vs open source. Toggle raw scores vs value-adjusted VAPS.</p>
+          </div>
+          <div class="landing-feature-card">
+            <span class="landing-icon ti ti-code"></span>
+            <h4>Built in the open</h4>
+            <p>MIT licensed, no signup, no tracking. Data in plain JSON — fork it, fix a price, add a model, deploy your own instance on GitHub Pages.</p>
+          </div>
+          <div class="landing-feature-card">
+            <span class="landing-icon ti ti-share"></span>
+            <h4>Shareable comparisons</h4>
+            <p>Every filter state lives in the URL. Send a teammate the exact profile, model set, and benchmarks you're evaluating — one link, zero setup.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section landing-steps">
+        <h3 class="landing-section-title">How to find your best model in 60 seconds</h3>
+        <ol class="landing-steps-list">
+          <li>
+            <span class="landing-step-num">1</span>
+            <div>
+              <strong>Pick your usage profile</strong>
+              <p>Agent, coding, RAG, voice, workflow — or set a custom input/output ratio.</p>
+            </div>
+          </li>
+          <li>
+            <span class="landing-step-num">2</span>
+            <div>
+              <strong>Review recommended models for that profile</strong>
+              <p>Or hand-pick models, filter closed vs open, toggle benchmarks.</p>
+            </div>
+          </li>
+          <li>
+            <span class="landing-step-num">3</span>
+            <div>
+              <strong>Sort by VAPS or effective $/1M</strong>
+              <p>The table and chart reorder for your economics. Ship with the model that fits.</p>
+            </div>
+          </li>
         </ol>
       </section>
 
-      <p class="seo-footer-note">
-        Free, open source, no signup. Data from official provider pricing and public leaderboards — updated as models ship.
-        Built for builders who ship alone and pay the API bill themselves.
-      </p>
+      <footer class="landing-footer">
+        <p class="landing-footer-text">
+          Free forever. Benchmark data from official leaderboards. Pricing from provider docs and OpenRouter.
+          Built by a solo developer, for solo developers.
+        </p>
+        <a href="#" class="landing-cta" id="scrollToToolBottom">Back to comparison ↑</a>
+      </footer>
     </article>
   `;
 
   initControls();
+  initLandingCTA();
+}
+
+function initLandingCTA() {
+  function scrollToTool(e) {
+    e.preventDefault();
+    document.getElementById('profilePicker')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.getElementById('scrollToTool')?.addEventListener('click', scrollToTool);
+  document.getElementById('scrollToToolBottom')?.addEventListener('click', scrollToTool);
 }
 
 /* ---- Start ---- */
