@@ -1064,7 +1064,7 @@ function buildUI() {
     </div>
 
     <article class="landing" id="landing">
-      <header class="landing-hero">
+      <div class="landing-hero">
         <p class="landing-eyebrow">Built for builders who pay the API bill themselves</p>
         <h2 class="landing-headline">Stop picking the model that wins Twitter.<br>Pick the one that wins for <span class="landing-accent">your</span> workload.</h2>
         <p class="landing-lead">
@@ -1083,7 +1083,7 @@ function buildUI() {
           <div class="landing-stat"><span class="landing-stat-num">$0</span><span class="landing-stat-label">free, no signup</span></div>
           <div class="landing-stat"><span class="landing-stat-num">Open</span><span class="landing-stat-label">source MIT</span></div>
         </div>
-      </header>
+      </div>
 
       <section class="landing-section">
         <h3 class="landing-section-title">Who this is for</h3>

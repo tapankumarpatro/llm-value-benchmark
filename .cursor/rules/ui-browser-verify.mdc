@@ -1,0 +1,25 @@
+---
+description: Require browser verification after any UI/HTML/CSS change
+globs: "{index.html,assets/**/*.{html,css,js}}"
+alwaysApply: false
+---
+
+# UI changes must be verified in a browser before marking done
+
+After editing HTML, CSS, or frontend JS in this project:
+
+1. **Serve locally** — `python -m http.server 8765` from repo root (PowerShell: use `;` not `&&`).
+2. **Open in browser** — navigate to `http://127.0.0.1:8765` (Puppeteer MCP or local browser).
+3. **Check layout** — scroll full page; confirm no overlapping sections, sticky bleed, or horizontal scroll.
+4. **Check interactions** — profile tabs, chart render, model picker, landing CTAs scroll to tool.
+5. **Screenshot evidence** — capture at least one full-page or landing screenshot before saying the UI task is complete.
+
+## Common pitfalls in this repo
+
+- Never use bare `header { }` for site chrome — it also hits `.landing-hero`. Use `.site-header` only.
+- Avoid `overflow-x: clip` on parents that contain charts + long tables unless tested.
+- Chart.js needs a fixed `height` on `.chart-container`, not only `min-height`.
+
+## Done criteria
+
+Do not report UI work as finished until browser verification passes with no visible layout leaks.
